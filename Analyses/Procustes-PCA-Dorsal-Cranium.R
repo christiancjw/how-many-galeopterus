@@ -25,16 +25,15 @@ plot(lands[,2,]~lands[,1,])
 ## Procrustes analyses - uses reference specimen to line up all specimens 
 gpa.lands <- gpagen(lands)
 
+# Visualising procrustes analysis
 # Black points are mean position of coordinates with grey points showing variation
 plot(gpa.lands)
 # Shows average landmark coordinates
 gpa.lands
 # Shows the scaled coordinates of all specimens
 gpa.lands$coords
-
 # Expanded information of gpa.lands. (Str:structure)
 str(gpa.lands)
-
 
 # Reading in of metadata ----
 metadata <- read.csv("Rawdata/dermopteradata.csv")
@@ -66,7 +65,7 @@ pc_data <- full_join(pc_scores, metadata, by = c("specimenID" = "DorsalID"))
 g_data <- pc_data
 gv_data <- filter(g_data, !Region == "Philippines")
 
-## Plotting dorsal landmarks without volans
+## Plotting dorsal landmarks without volans. Only  principle component 1
 ggplot(gv_data, aes(x=PC1, y=PC2, colour=Region)) + 
   geom_point()
 
@@ -74,8 +73,18 @@ ggplot(gv_data, aes(x=PC1, y=PC2, colour=Region)) +
 write_csv(pc_data, path = "~/Users/christianching/Desktop/
           Galeopterus/RProject/galeopterus.skulls/Data/colugo-pca-data-dorsal.csv") 
 
-##??
+## Which landmarks are contributing towards each principle component
 pca.landmarks$rotation
+
+## Plot a reference shape
+ref <- mshape(gpa.lands$coords)
+
+#plotting the minimum and maximum of x & y values 
+plot(ref)
+plotRefToTarget(ref, pca.landmarks$shapes$shapes.comp1$min)
+plotRefToTarget(ref, pca.landmarks$shapes$shapes.comp1$max)
+plotRefToTarget(ref, pca.landmarks$shapes$shapes.comp2$min)
+plotRefToTarget(ref, pca.landmarks$shapes$shapes.comp2$max)
 
 # Plotting PC Data. ----
 ## Aesthetics(X var, Y Var, shape based variable, colour based variable)
