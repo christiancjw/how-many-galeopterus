@@ -12,6 +12,7 @@ library(ggplot2)
 library(dplyr)
 
 # Inputting of coordinate data ----
+
 # TPS file created from scaled landmarks measured in ImageJ
 # Read in landmark coordinates
 lands <- readland.tps(file = "Rawdata/dorsal.crania.tps", specID = "ID")
@@ -21,9 +22,11 @@ lands
 sundalands <- readland.tps(file = "Rawdata/sunda.dorsal.crania.tps", specID = "ID")
 sundalands
 
-# Plot y against x (Without procrustes - plotted points represent landmarks prior
+# Plot raw y against raw x (Without procrustes - plotted points represent landmarks prior
 ## to rotation and scaling)
 plot(lands[,2,]~lands[,1,])
+
+# Plot G. Varigatus raw points
 plot(sundalands[,2,]~sundalands[,1,])
 
 # Normalisation of data through Generalised Procustes Analysis ----
@@ -32,25 +35,34 @@ gpa.lands <- gpagen(lands)
 
 # Same with G. variegatus data
 gpa.sunda <- gpagen(sundalands)
-plot(gpa.sunda)
 
-# Visualising procrustes analysis
+# Visualising procrustes analysis ----
+
 # Black points are mean position of coordinates with grey points showing variation
 plot(gpa.lands)
+plot(gpa.sunda)
+
 # Shows average landmark coordinates
 gpa.lands
+gpa.sunda
+
 # Shows the scaled coordinates of all specimens
 gpa.lands$coords
+gpa.sunda$coords
+
 # Expanded information of gpa.lands. (Str:structure)
 str(gpa.lands)
+str(gpa.sunda)
 
 # Reading in of metadata ----
 metadata <- read.csv("Rawdata/dermopteradata.csv")
 glimpse(metadata)
 
-## PCA Analysis ----
+# PCA Analysis ----
+
+# PCA Analysis (Geomorph Principal and phylogenetically-aligned 
+## components analysis of shape data)
 pca.landmarks <- gm.prcomp(gpa.lands$coords)
-pca.landmarks
 
 # Ditto for G.variegatus data
 sunda.pca.landmarks <- gm.prcomp(gpa.sunda$coords)
@@ -58,10 +70,16 @@ sunda.pca.landmarks <- gm.prcomp(gpa.sunda$coords)
 # How many PCs to include up to 95%? 
 summary(pca.landmarks)
 summary(sunda.pca.landmarks)
+
+## Which landmarks are contributing towards each principle component
+pca.landmarks$rotation
+sunda.pca.landmarks$rotation
+
 ## Can be seen that 16 principal components explains for 95.7% of variation (within full
 ## data set including volans and variegatus)
 
 # Merge PC scores and metadata ----
+
 # Extract PC scores and make ID name from TPS into a taxon column for 
 ## combining with the metadata
 pc_scores <- data.frame(specimenID = rownames(pca.landmarks$x), 
@@ -71,6 +89,7 @@ pc_scores
 # same with variegatus
 sunda_scores <- data.frame(specimenID = rownames(sunda.pca.landmarks$x), 
                            sunda.pca.landmarks$x)
+sunda_scores
 
 # Make column names begin with PC not Comp
 colnames(pc_scores) <- gsub("Comp", "PC", colnames(pc_scores))
@@ -83,21 +102,22 @@ sunda_pc_data <- full_join(sunda_scores, metadata, by = c("specimenID" = "Dorsal
 ## Plotting dorsal landmarks
 ggplot(pc_data, aes(x=PC1, y=PC2, colour=Region)) + 
   geom_point()
-# Plot G.variegatus principal component analysis 
+
+# Plots for G.variegatus principal component analysis 
 ggplot(sunda_pc_data, aes(x=PC1, y=PC2, colour=Region)) + 
   geom_point()
 ggplot(sunda_pc_data, aes(x=PC3, y=PC4, colour=Region)) + 
   geom_point()
 ggplot(sunda_pc_data, aes(x=PC5, y=PC6, colour=Region)) + 
   geom_point()
+ggplot(sunda_pc_data, aes(x=PC6, y=PC7, colour=Region)) + 
+  geom_point()
 
-# Write to file ----
+# Write PC scores to new csv files ----
 write_csv(pc_data, file = "Rawdata/colugo-pca-data-dorsal.csv") 
 write_csv(sunda_pc_data, file = "Rawdata/variegatus-pca-data-dorsal.csv") 
 
-## Which landmarks are contributing towards each principle component
-pca.landmarks$rotation
-sunda.pca.landmarks$rotation
+# Creation of wireframes ----
 
 ## Plot a reference shape
 ref <- mshape(gpa.lands$coords)
@@ -117,13 +137,27 @@ plotRefToTarget(sundaref, sunda.pca.landmarks$shapes$shapes.comp2$min)
 plotRefToTarget(sundaref, sunda.pca.landmarks$shapes$shapes.comp2$max)
 
 # Plotting PC Data. ----
-## Aesthetics(X var, Y Var, shape based variable, colour based variable)
-## geom_label(aes(label=XX))
+
+# Plotting dermoptera dorsal PC scores. PC1 & PC2
 ggplot(pc_data, aes(x=PC1, y=PC2, shape=CurrentSp, colour=Region)) + 
   geom_point()
-  
+
+# Plots for G.variegatus dorsal principal component analysis 
+# 8 Rows missing represent Philippine specimens
+ggplot(sunda_pc_data, aes(x=PC1, y=PC2, colour=Region)) + 
+  geom_point()
+ggplot(sunda_pc_data, aes(x=PC3, y=PC4, colour=Region)) + 
+  geom_point()
+ggplot(sunda_pc_data, aes(x=PC5, y=PC6, colour=Region)) + 
+  geom_point()
+ggplot(sunda_pc_data, aes(x=PC6, y=PC7, colour=Region)) + 
+  geom_point()
+
+# Misc Code ----
   geom_label(aes(label=SpecimenID))
 
 print(pc_data)
-options(max.print = 100000)
+options(max.print = 20)
 
+## Aesthetics(X var, Y Var, shape based variable, colour based variable)
+## geom_label(aes(label=XX))
