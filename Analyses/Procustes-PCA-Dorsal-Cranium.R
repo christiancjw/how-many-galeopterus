@@ -10,6 +10,7 @@ library(geomorph)
 library(tidyverse)
 library(ggplot2)
 library(dplyr)
+library(patchwork)
 
 # Inputting of coordinate data ----
 
@@ -96,36 +97,8 @@ colnames(pc_scores) <- gsub("Comp", "PC", colnames(pc_scores))
 colnames(sunda_scores) <- gsub("Comp", "PC", colnames(sunda_scores))
 
 # Merge with metadata ----
-pc_data <- full_join(pc_scores, metadata, by = c("specimenID" = "DorsalID"))
-sunda_pc_data <- full_join(sunda_scores, metadata, by = c("specimenID" = "DorsalID"))
-
-## Plotting dorsal landmarks
-ggplot(pc_data, aes(x=PC1, y=PC2, colour=Region)) + 
-  geom_point()
-ggplot(pc_data, aes(x=PC1, y=PC3, colour=Region)) + 
-  geom_point()
-ggplot(pc_data, aes(x=PC1, y=PC4, colour=Region)) + 
-  geom_point()
-ggplot(pc_data, aes(x=PC2, y=PC3, colour=Region)) + 
-  geom_point()
-ggplot(pc_data, aes(x=PC2, y=PC4, colour=Region)) + 
-  geom_point()
-ggplot(pc_data, aes(x=PC3, y=PC4, colour=Region)) + 
-  geom_point()
-
-# Plots for G.variegatus principal component analysis 
-ggplot(sunda_pc_data, aes(x=PC1, y=PC2, colour=Region)) + 
-  geom_point()
-ggplot(sunda_pc_data, aes(x=PC1, y=PC3, colour=Region)) + 
-  geom_point()
-ggplot(sunda_pc_data, aes(x=PC1, y=PC4, colour=Region)) + 
-  geom_point()
-ggplot(sunda_pc_data, aes(x=PC2, y=PC3, colour=Region)) + 
-  geom_point()
-ggplot(sunda_pc_data, aes(x=PC2, y=PC4, colour=Region)) + 
-  geom_point()
-ggplot(sunda_pc_data, aes(x=PC3, y=PC4, colour=Region)) + 
-  geom_point()
+pc_data <- full_join(pc_scores, metadata, by = c("specimenID" = "Dorsal.ID"))
+sunda_pc_data <- full_join(sunda_scores, metadata, by = c("specimenID" = "Dorsal.ID"))
 
 # Write PC scores to new csv files ----
 write_csv(pc_data, file = "Rawdata/colugo-pca-data-dorsal.csv") 
@@ -143,29 +116,66 @@ plotRefToTarget(ref, pca.landmarks$shapes$shapes.comp1$min)
 plotRefToTarget(ref, pca.landmarks$shapes$shapes.comp1$max)
 plotRefToTarget(ref, pca.landmarks$shapes$shapes.comp2$min)
 plotRefToTarget(ref, pca.landmarks$shapes$shapes.comp2$max)
+plotRefToTarget(ref, pca.landmarks$shapes$shapes.comp3$min)
+plotRefToTarget(ref, pca.landmarks$shapes$shapes.comp3$max)
+
 # Same for G.variegatus
 plot(sundaref)
 plotRefToTarget(sundaref, sunda.pca.landmarks$shapes$shapes.comp1$min)
 plotRefToTarget(sundaref, sunda.pca.landmarks$shapes$shapes.comp1$max)
 plotRefToTarget(sundaref, sunda.pca.landmarks$shapes$shapes.comp2$min)
 plotRefToTarget(sundaref, sunda.pca.landmarks$shapes$shapes.comp2$max)
+plotRefToTarget(sundaref, sunda.pca.landmarks$shapes$shapes.comp3$min)
+plotRefToTarget(sundaref, sunda.pca.landmarks$shapes$shapes.comp3$max)
 
 # Plotting PC Data. ----
 
-# Plotting dermoptera dorsal PC scores. PC1 & PC2
-ggplot(pc_data, aes(x=PC1, y=PC2, shape=CurrentSp, colour=Region)) + 
-  geom_point()
+## Plotting dorsal landmarks
+derm.PC1 <- ggplot(pc_data, aes(x=PC1, y=PC2, shape=CurrentSp, colour=Region)) + 
+  geom_point() + 
+  theme_bw(base_size = 10) +
+  labs(shape = "Current species")
+derm.PC2 <- ggplot(pc_data, aes(x=PC1, y=PC3, shape=CurrentSp, colour=Region)) + 
+  geom_point() + 
+  theme_bw(base_size = 10) +
+  labs(shape = "Current species")
+ggplot(pc_data, aes(x=PC1, y=PC4, shape=CurrentSp, colour=Region)) + 
+  geom_point() + 
+  theme_bw(base_size = 10) +
+  labs(shape = "Current species")
+ggplot(pc_data, aes(x=PC2, y=PC3, shape=CurrentSp, colour=Region)) + 
+  geom_point() + 
+  theme_bw(base_size = 10) +
+  labs(shape = "Current species")
+ggplot(pc_data, aes(x=PC2, y=PC4, shape=CurrentSp, colour=Region)) + 
+  geom_point() + 
+  theme_bw(base_size = 10) +
+  labs(shape = "Current species")
+ggplot(pc_data, aes(x=PC3, y=PC4, shape=CurrentSp, colour=Region)) + 
+  geom_point() + 
+  theme_bw(base_size = 10) +
+  labs(shape = "Current species")
 
-# Plots for G.variegatus dorsal principal component analysis 
-# 8 Rows missing represent Philippine specimens
+derm.PC1 + derm.PC2
+# Plots for G.variegatus principal component analysis 
 ggplot(sunda_pc_data, aes(x=PC1, y=PC2, colour=Region)) + 
-  geom_point()
+  geom_point() + 
+  theme_bw(base_size = 10)
+ggplot(sunda_pc_data, aes(x=PC1, y=PC3, colour=Region)) + 
+  geom_point() + 
+  theme_bw(base_size = 10)
+ggplot(sunda_pc_data, aes(x=PC1, y=PC4, colour=Region)) + 
+  geom_point() + 
+  theme_bw(base_size = 10)
+ggplot(sunda_pc_data, aes(x=PC2, y=PC3, colour=Region)) + 
+  geom_point() + 
+  theme_bw(base_size = 10)
+ggplot(sunda_pc_data, aes(x=PC2, y=PC4, colour=Region)) + 
+  geom_point() + 
+  theme_bw(base_size = 10)
 ggplot(sunda_pc_data, aes(x=PC3, y=PC4, colour=Region)) + 
-  geom_point()
-ggplot(sunda_pc_data, aes(x=PC5, y=PC6, colour=Region)) + 
-  geom_point()
-ggplot(sunda_pc_data, aes(x=PC6, y=PC7, colour=Region)) + 
-  geom_point()
+  geom_point() + 
+  theme_bw(base_size = 10)
 
 # Misc Code ----
   geom_label(aes(label=SpecimenID))
