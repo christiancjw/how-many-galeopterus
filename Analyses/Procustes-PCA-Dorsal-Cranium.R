@@ -102,15 +102,29 @@ sunda_pc_data <- full_join(sunda_scores, metadata, by = c("specimenID" = "Dorsal
 ## Plotting dorsal landmarks
 ggplot(pc_data, aes(x=PC1, y=PC2, colour=Region)) + 
   geom_point()
+ggplot(pc_data, aes(x=PC1, y=PC3, colour=Region)) + 
+  geom_point()
+ggplot(pc_data, aes(x=PC1, y=PC4, colour=Region)) + 
+  geom_point()
+ggplot(pc_data, aes(x=PC2, y=PC3, colour=Region)) + 
+  geom_point()
+ggplot(pc_data, aes(x=PC2, y=PC4, colour=Region)) + 
+  geom_point()
+ggplot(pc_data, aes(x=PC3, y=PC4, colour=Region)) + 
+  geom_point()
 
 # Plots for G.variegatus principal component analysis 
 ggplot(sunda_pc_data, aes(x=PC1, y=PC2, colour=Region)) + 
   geom_point()
+ggplot(sunda_pc_data, aes(x=PC1, y=PC3, colour=Region)) + 
+  geom_point()
+ggplot(sunda_pc_data, aes(x=PC1, y=PC4, colour=Region)) + 
+  geom_point()
+ggplot(sunda_pc_data, aes(x=PC2, y=PC3, colour=Region)) + 
+  geom_point()
+ggplot(sunda_pc_data, aes(x=PC2, y=PC4, colour=Region)) + 
+  geom_point()
 ggplot(sunda_pc_data, aes(x=PC3, y=PC4, colour=Region)) + 
-  geom_point()
-ggplot(sunda_pc_data, aes(x=PC5, y=PC6, colour=Region)) + 
-  geom_point()
-ggplot(sunda_pc_data, aes(x=PC6, y=PC7, colour=Region)) + 
   geom_point()
 
 # Write PC scores to new csv files ----
