@@ -7,42 +7,47 @@ pc_data <- read_csv(file = "Rawdata/colugo-pca-data-dorsal.csv")
 # Multivariate analysis of variance for Dermoptera Data ----
 
 # MANOVA of Dermoptera PCA data by species (Philippine vs Sunda)
-derm.sp.manova <- manova(cbind(pc_data$PC1, pc_data$PC2) ~ CurrentSp,
+# As matrix allows the use of multiple PC columns
+derm.species.manova <- manova(as.matrix(pc_data[,2:19]) ~ CurrentSp,
                    data = pc_data)
-summary(derm.sp.manova)
+summary(derm.species.manova)
 
 # MANOVA of Dermopetra PCA data by region
-derm.r.manova <- manova(cbind(pc_data$PC1, pc_data$PC2) ~ Region,
+derm.region.manova <- manova(as.matrix(pc_data[,2:19]) ~ Region,
                       data = pc_data)
-summary(derm.r.manova)
+summary(derm.region.manova)
 
 # MANOVA of Dermoptera PCA data by sex
-derm.s.manova <- manova(cbind(pc_data$PC1, pc_data$PC2) ~ Sex,
+derm.sex.manova <- manova(as.matrix(pc_data[,2:19]) ~ Sex,
                         data = pc_data)
-summary(derm.s.manova)
+summary(derm.sex.manova)
 
 # MANOVA of Dermopetra PCA data by date photographed
-derm.d.manova <- manova(cbind(pc_data$PC1, pc_data$PC2) ~ DatePhotographed,
+derm.date.manova <- manova(as.matrix(pc_data[,2:19]) ~ Date.Photographed,
                         data = pc_data)
-summary(derm.d.manova)
+summary(derm.date.manova)
 
 # Multivariate analysis of variance for Sunda Data ----
 
 # MANOVA of G.variegatus PCA data by region
-sunda.manova <- manova(cbind(sunda_pc_data$PC1, sunda_pc_data$PC2) ~ Region,
+sunda.region.manova <- manova(as.matrix(sunda_pc_data[,2:20]) ~ Region,
                        data = sunda_pc_data)
-summary(sunda.manova)
-anova(sunda.manova)
+summary(sunda.region.manova)
 
 # MANOVA of G.variegatus PCA data by sex
-sunda.s.manova <- manova(cbind(pc_data$PC1, pc_data$PC2) ~ Sex,
+sunda.sex.manova <- manova(as.matrix(sunda_pc_data[,2:20]) ~ Sex,
                         data = sunda_pc_data)
-summary(derm.s.manova)
+summary(sunda.sex.manova)
 
 # MANOVA of G.variegatus PCA data by date photographed
-sunda.d.manova <- manova(cbind(pc_data$PC1, pc_data$PC2) ~ DatePhotographed,
-                        data = pc_data)
-summary(derm.d.manova)
+sunda.date.manova <- manova(as.matrix(sunda_pc_data[,2:20]) ~ Date.Photographed,
+                        data = sunda_pc_data)
+summary(sunda.date.manova)
+
+# MANOVA of G.variegatus PCA data by sex and region
+sunda.sr.manova <- manova(as.matrix(sunda_pc_data[,2:20]) ~ Sex * Region * Date.Photographed,
+                          data = sunda_pc_data)
+summary(sunda.sr.manova)
 
 # Misc Notes ----
 
