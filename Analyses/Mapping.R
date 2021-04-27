@@ -5,16 +5,16 @@ library(sf)
 library(rgeos)
 library(rgdal)
 library(Hmisc)
-install.packages("sf")
-install.packages("rgeos")
-install.packages("rgdal")
-install.packages("Hmsic")
+library(rnaturalearth)
+install.packages("rnaturalearth")
 
 # Helper functions for plotting
+
 remove_y <- 
   theme(axis.title.y=element_blank(),
         axis.text.y=element_blank(),
         axis.ticks.y=element_blank())
+
 remove_x <-   
   theme(axis.title.x=element_blank(),
         axis.text.x=element_blank(),
@@ -24,14 +24,19 @@ remove_x <-
 ##----------------------------------------------
 
 # First convert the lat long into "points" data for plotting
-colugo <-
-  pc_data %>%
+
+colugoref <- pc_data %>%
+  filter(!Extent..m. == "NA") 
+
+colugo <- colugoref %>%
   st_as_sf(coords = c("Longitude", "Latitude"), crs = 4326)
 
+  colugo
 
 ##----------------------------------------------
 # Make a base map of the land
 ##----------------------------------------------
+  
 baseMap <- 
   rnaturalearth::ne_countries(returnclass = 'sf') %>%
   st_union()
@@ -52,7 +57,7 @@ ggplot(baseMap) +
   geom_sf() +
   # Add points
   geom_sf(alpha = 0.5, aes(colour = Region, fill = Region),
-          data = specs, show.legend = TRUE, size = 0.5) +
+          data = colugo, show.legend = TRUE, size = 0.5) +
   # restrict map to just Asia
   coord_sf(xlim = xlim_as, ylim = ylim_as, expand = TRUE) +
   theme_bw() +
