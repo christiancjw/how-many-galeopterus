@@ -35,28 +35,28 @@ plot(sunda.ventral.lands[,2,]~sunda.ventral.lands[,1,])
 
 # Normalisation of data through Generalised Procustes Analysis ----
 ## Procrustes analyses - uses reference specimen to line up all specimens 
-gpa.lands <- gpagen(lands)
+gpa.ventral.lands <- gpagen(ventral.lands)
 
 # Same with G. variegatus data
-gpa.sunda <- gpagen(sundalands)
+gpa.ventral.sunda <- gpagen(sunda.ventral.lands)
 
 # Visualising procrustes analysis ----
 
 # Black points are mean position of coordinates with grey points showing variation
-plot(gpa.lands)
-plot(gpa.sunda)
+plot(gpa.ventral.lands)
+plot(gpa.ventral.sunda)
 
 # Shows average landmark coordinates
-gpa.lands
-gpa.sunda
+gpa.ventral.lands
+gpa.ventral.sunda
 
 # Shows the scaled coordinates of all specimens
-gpa.lands$coords
-gpa.sunda$coords
+gpa.ventral.lands$coords
+gpa.ventral.sunda$coords
 
 # Expanded information of gpa.lands. (Str:structure)
-str(gpa.lands)
-str(gpa.sunda)
+str(gpa.ventral.lands)
+str(gpa.ventral.sunda)
 
 # Reading in of metadata ----
 metadata <- read.csv("Rawdata/dermopteradata.csv")
@@ -66,18 +66,18 @@ glimpse(metadata)
 
 # PCA Analysis (Geomorph Principal and phylogenetically-aligned 
 ## components analysis of shape data)
-pca.landmarks <- gm.prcomp(gpa.lands$coords)
+pca.ventral.landmarks <- gm.prcomp(gpa.ventral.lands$coords)
 
 # Ditto for G.variegatus data
-sunda.pca.landmarks <- gm.prcomp(gpa.sunda$coords)
+sunda.pca.ventral.landmarks <- gm.prcomp(gpa.ventral.sunda$coords)
 
 # How many PCs to include up to 95%? 
-summary(pca.landmarks)
-summary(sunda.pca.landmarks)
+summary(pca.ventral.landmarks)
+summary(sunda.pca.ventral.landmarks)
 
 ## Which landmarks are contributing towards each principle component
-pca.landmarks$rotation
-sunda.pca.landmarks$rotation
+pca.ventral.landmarks$rotation
+sunda.pca.ventral.landmarks$rotation
 
 ## Can be seen that 16 principal components explains for 95.7% of variation (within full
 ## data set including volans and variegatus)
@@ -86,47 +86,44 @@ sunda.pca.landmarks$rotation
 
 # Extract PC scores and make ID name from TPS into a taxon column for 
 ## combining with the metadata
-pc_scores <- data.frame(specimenID = rownames(pca.landmarks$x), 
-                        pca.landmarks$x)
-pc_scores
+ventral.pc.scores <- data.frame(specimenID = rownames(pca.ventral.landmarks$x), 
+                        pca.ventral.landmarks$x)
+ventral.pc.scores
 
 # same with variegatus
-sunda_scores <- data.frame(specimenID = rownames(sunda.pca.landmarks$x), 
-                           sunda.pca.landmarks$x)
-sunda_scores
+ventral.sunda.scores <- data.frame(specimenID = rownames(sunda.pca.ventral.landmarks$x), 
+                           sunda.pca.ventral.landmarks$x)
+ventral.sunda.scores
 
 # Make column names begin with PC not Comp
-colnames(pc_scores) <- gsub("Comp", "PC", colnames(pc_scores))
-colnames(sunda_scores) <- gsub("Comp", "PC", colnames(sunda_scores))
+colnames(ventral.pc.scores) <- gsub("Comp", "PC", colnames(ventral.pc.scores))
+colnames(ventral.sunda.scores) <- gsub("Comp", "PC", colnames(ventral.sunda.scores))
 
 # Merge with metadata ----
-pc_data <- full_join(pc_scores, metadata, by = c("specimenID" = "Dorsal.ID"))
-sunda_pc_data_unfixed <- full_join(sunda_scores, metadata, by = c("specimenID" = "Dorsal.ID"))
+ventral.pc.data <- full_join(ventral.pc.scores, metadata, by = c("specimenID" = "Dorsal.ID"))
+ventral.sunda.pc.data.unfixed <- full_join(ventral.sunda.scores, metadata, by = c("specimenID" = "Dorsal.ID"))
 
-sunda_pc_data <- sunda_pc_data_unfixed %>% 
+ventral.sunda.pc.data <- ventral.sunda.pc.data.unfixed %>% 
   filter(!Region == "Philippines")
 
-# Write PC scores to new csv files ----
-write_csv(pc_data, file = "Rawdata/colugo-pca-data-dorsal.csv") 
-write_csv(sunda_pc_data, file = "Rawdata/variegatus-pca-data-dorsal.csv") 
 
 # Creation of wireframes ----
 
 ## Plot a reference shape
-ref <- mshape(gpa.lands$coords)
-sundaref <- mshape(gpa.sunda$coords)
+ventral.ref <- mshape(gpa.ventral.lands$coords)
+sunda.ventralref <- mshape(gpa.ventral.sunda$coords)
 
 # Plotting the minimum and maximum of x & y values 
-plot(ref)
-plotRefToTarget(ref, pca.landmarks$shapes$shapes.comp1$min)
-plotRefToTarget(ref, pca.landmarks$shapes$shapes.comp1$max)
-plotRefToTarget(ref, pca.landmarks$shapes$shapes.comp2$min)
-plotRefToTarget(ref, pca.landmarks$shapes$shapes.comp2$max)
-plotRefToTarget(ref, pca.landmarks$shapes$shapes.comp3$min)
-plotRefToTarget(ref, pca.landmarks$shapes$shapes.comp3$max)
+plot(ventral.ref)
+plotRefToTarget(ventral.ref, pca.ventral.landmarks$shapes$shapes.comp1$min)
+plotRefToTarget(ventral.ref, pca.ventral.landmarks$shapes$shapes.comp1$max)
+plotRefToTarget(ventral.ref, pca.ventral.landmarks$shapes$shapes.comp2$min)
+plotRefToTarget(ventral.ref, pca.ventral.landmarks$shapes$shapes.comp2$max)
+plotRefToTarget(ventral.ref, pca.ventral.landmarks$shapes$shapes.comp3$min)
+plotRefToTarget(ventral.ref, pca.ventral.landmarks$shapes$shapes.comp3$max)
 
 # Same for G.variegatus
-plot(sundaref)
+plot(sunda.ventral.ref)
 plotRefToTarget(sundaref, sunda.pca.landmarks$shapes$shapes.comp1$min)
 plotRefToTarget(sundaref, sunda.pca.landmarks$shapes$shapes.comp1$max)
 plotRefToTarget(sundaref, sunda.pca.landmarks$shapes$shapes.comp2$min)
@@ -138,7 +135,7 @@ plotRefToTarget(sundaref, sunda.pca.landmarks$shapes$shapes.comp3$max)
 
 ## Plotting dorsal landmarks
 
-derm.plot.1 <- ggplot(pc_data, aes(x=PC1, y=PC2, shape=CurrentSp, colour=Region)) + 
+derm.plot.1 <- ggplot(ventral.pc.data, aes(x=PC1, y=PC2, shape=CurrentSp, colour=Region)) + 
   geom_point(alpha = 0.75) + 
   theme_bw(base_size = 7) +
   labs(shape = "Current species") + 
@@ -313,3 +310,6 @@ options(max.print = 20)
 
 ## Aesthetics(X var, Y Var, shape based variable, colour based variable)
 ## geom_label(aes(label=XX))
+# Write PC scores to new csv files ----
+write_csv(pc_data, file = "Rawdata/colugo-pca-data-dorsal.csv") 
+write_csv(sunda_pc_data, file = "Rawdata/variegatus-pca-data-dorsal.csv") 
