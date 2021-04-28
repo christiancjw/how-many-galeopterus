@@ -23,40 +23,40 @@ ventral.lands <- readland.tps(file = "Rawdata/ventral.crania.tps", specID = "ID"
 ventral.lands
 
 # Input of only G. variegatus tps data
-sunda.ventral.lands <- readland.tps(file = "Rawdata/sunda.ventral.crania.tps", specID = "ID")
-sunda.ventral.lands
+ventral.gv.lands <- readland.tps(file = "Rawdata/sunda.ventral.crania.tps", specID = "ID")
+ventral.gv.lands
 
 # Plot raw y against raw x (Without procrustes - plotted points represent landmarks prior
 ## to rotation and scaling)
 plot(ventral.lands[,2,]~ventral.lands[,1,])
 
 # Plot G. Varigatus raw points
-plot(sunda.ventral.lands[,2,]~sunda.ventral.lands[,1,])
+plot(ventral.gv.lands[,2,]~ventral.gv.lands[,1,])
 
 # Normalisation of data through Generalised Procustes Analysis ----
 ## Procrustes analyses - uses reference specimen to line up all specimens 
 gpa.ventral.lands <- gpagen(ventral.lands)
 
 # Same with G. variegatus data
-gpa.ventral.sunda <- gpagen(sunda.ventral.lands)
+gpa.ventral.gv.lands <- gpagen(ventral.gv.lands)
 
 # Visualising procrustes analysis ----
 
 # Black points are mean position of coordinates with grey points showing variation
 plot(gpa.ventral.lands)
-plot(gpa.ventral.sunda)
+plot(gpa.ventral.gv.lands)
 
 # Shows average landmark coordinates
 gpa.ventral.lands
-gpa.ventral.sunda
+gpa.ventral.gv.lands
 
 # Shows the scaled coordinates of all specimens
 gpa.ventral.lands$coords
-gpa.ventral.sunda$coords
+gpa.ventral.gv.lands$coords
 
 # Expanded information of gpa.lands. (Str:structure)
 str(gpa.ventral.lands)
-str(gpa.ventral.sunda)
+str(gpa.ventral.gv.lands)
 
 # Reading in of metadata ----
 metadata <- read.csv("Rawdata/dermopteradata.csv")
@@ -66,33 +66,33 @@ glimpse(metadata)
 
 # PCA Analysis (Geomorph Principal and phylogenetically-aligned 
 ## components analysis of shape data)
-pca.ventral.landmarks <- gm.prcomp(gpa.ventral.lands$coords)
+ventral.pca.landmarks <- gm.prcomp(gpa.ventral.lands$coords)
 
 # Ditto for G.variegatus data
-sunda.pca.ventral.landmarks <- gm.prcomp(gpa.ventral.sunda$coords)
+ventral.pca.gv.landmarks <- gm.prcomp(gpa.ventral.gv.lands$coords)
 
 # How many PCs to include up to 95%? 
-summary(pca.ventral.landmarks)
-summary(sunda.pca.ventral.landmarks)
+summary(ventral.pca.landmarks)
+summary(ventral.pca.gv.landmarks)
 
 ## Which landmarks are contributing towards each principle component
-pca.ventral.landmarks$rotation
-sunda.pca.ventral.landmarks$rotation
+ventral.pca.landmarks$rotation
+ventral.pca.gv.landmarks$rotation
 
 ## Can be seen that 16 principal components explains for 95.7% of variation (within full
 ## data set including volans and variegatus)
 
-# Merge PC scores and metadata ----
+# Read in metadata and prep PC data for merging  ----
 
 # Extract PC scores and make ID name from TPS into a taxon column for 
 ## combining with the metadata
-ventral.pc.scores <- data.frame(specimenID = rownames(pca.ventral.landmarks$x), 
-                        pca.ventral.landmarks$x)
+ventral.pc.scores <- data.frame(specimenID = rownames(ventral.pca.landmarks$x), 
+                             ventral.pca.landmarks$x)
 ventral.pc.scores
 
 # same with variegatus
-ventral.sunda.scores <- data.frame(specimenID = rownames(sunda.pca.ventral.landmarks$x), 
-                           sunda.pca.ventral.landmarks$x)
+ventral.sunda.scores <- data.frame(specimenID = rownames(ventral.pca.gv.landmarks$x), 
+                             ventral.pca.gv.landmarks$x)
 ventral.sunda.scores
 
 # Make column names begin with PC not Comp
@@ -100,10 +100,10 @@ colnames(ventral.pc.scores) <- gsub("Comp", "PC", colnames(ventral.pc.scores))
 colnames(ventral.sunda.scores) <- gsub("Comp", "PC", colnames(ventral.sunda.scores))
 
 # Merge with metadata ----
-ventral.pc.data <- full_join(ventral.pc.scores, metadata, by = c("specimenID" = "Dorsal.ID"))
-ventral.sunda.pc.data.unfixed <- full_join(ventral.sunda.scores, metadata, by = c("specimenID" = "Dorsal.ID"))
+ventral.pc.data <- full_join(ventral.pc.scores, metadata, by = c("specimenID" = "Ventral.ID"))
+ventral.gv.pc.data.unfixed <- full_join(ventral.sunda.scores, metadata, by = c("specimenID" = "Ventral.ID"))
 
-ventral.sunda.pc.data <- ventral.sunda.pc.data.unfixed %>% 
+ventral.gv.pc.data <- ventral.gv.pc.data.unfixed %>% 
   filter(!Region == "Philippines")
 
 
@@ -111,89 +111,93 @@ ventral.sunda.pc.data <- ventral.sunda.pc.data.unfixed %>%
 
 ## Plot a reference shape
 ventral.ref <- mshape(gpa.ventral.lands$coords)
-sunda.ventralref <- mshape(gpa.ventral.sunda$coords)
+sunda.ventral.ref <- mshape(gpa.ventral.gv.lands$coords)
 
 # Plotting the minimum and maximum of x & y values 
 plot(ventral.ref)
-plotRefToTarget(ventral.ref, pca.ventral.landmarks$shapes$shapes.comp1$min)
-plotRefToTarget(ventral.ref, pca.ventral.landmarks$shapes$shapes.comp1$max)
-plotRefToTarget(ventral.ref, pca.ventral.landmarks$shapes$shapes.comp2$min)
-plotRefToTarget(ventral.ref, pca.ventral.landmarks$shapes$shapes.comp2$max)
-plotRefToTarget(ventral.ref, pca.ventral.landmarks$shapes$shapes.comp3$min)
-plotRefToTarget(ventral.ref, pca.ventral.landmarks$shapes$shapes.comp3$max)
+plotRefToTarget(ventral.ref, ventral.pca.landmarks$shapes$shapes.comp1$min)
+plotRefToTarget(ventral.ref, ventral.pca.landmarks$shapes$shapes.comp1$max)
+plotRefToTarget(ventral.ref, ventral.pca.landmarks$shapes$shapes.comp2$min)
+plotRefToTarget(ventral.ref, ventral.pca.landmarks$shapes$shapes.comp2$max)
+plotRefToTarget(ventral.ref, ventral.pca.landmarks$shapes$shapes.comp3$min)
+plotRefToTarget(ventral.ref, ventral.pca.landmarks$shapes$shapes.comp3$max)
 
 # Same for G.variegatus
 plot(sunda.ventral.ref)
-plotRefToTarget(sundaref, sunda.pca.landmarks$shapes$shapes.comp1$min)
-plotRefToTarget(sundaref, sunda.pca.landmarks$shapes$shapes.comp1$max)
-plotRefToTarget(sundaref, sunda.pca.landmarks$shapes$shapes.comp2$min)
-plotRefToTarget(sundaref, sunda.pca.landmarks$shapes$shapes.comp2$max)
-plotRefToTarget(sundaref, sunda.pca.landmarks$shapes$shapes.comp3$min)
-plotRefToTarget(sundaref, sunda.pca.landmarks$shapes$shapes.comp3$max)
+plotRefToTarget(sunda.ventral.ref, ventral.pca.gv.landmarks$shapes$shapes.comp1$min)
+plotRefToTarget(sunda.ventral.ref, ventral.pca.gv.landmarks$shapes$shapes.comp1$max)
+plotRefToTarget(sunda.ventral.ref, ventral.pca.gv.landmarks$shapes$shapes.comp2$min)
+plotRefToTarget(sunda.ventral.ref, ventral.pca.gv.landmarks$shapes$shapes.comp2$max)
+plotRefToTarget(sunda.ventral.ref, ventral.pca.gv.landmarks$shapes$shapes.comp3$min)
+plotRefToTarget(sunda.ventral.ref, ventral.pca.gv.landmarks$shapes$shapes.comp3$max)
 
-# Plotting PC Data. ----
+# Plots for ventral principal component analysis ----
 
-## Plotting dorsal landmarks
-
-derm.plot.1 <- ggplot(ventral.pc.data, aes(x=PC1, y=PC2, shape=CurrentSp, colour=Region)) + 
+ventral.plot1 <- ggplot(ventral.pc.data, aes(x=PC1, y=PC2, shape=CurrentSp, colour=Region)) + 
   geom_point(alpha = 0.75) + 
   theme_bw(base_size = 7) +
   labs(shape = "Current species") + 
   theme(legend.position = "NONE") +
   geom_vline(xintercept = 0, linetype='dotted', alpha = 0.8) +
-  geom_hline(yintercept = 0, linetype='dotted', alpha = 0.8)
+  geom_hline(yintercept = 0, linetype='dotted', alpha = 0.8) +
+  coord_cartesian(xlim=c(-0.07,0.07), ylim=c(-0.04,0.04))
 
-derm.plot.2 <- ggplot(pc_data, aes(x=PC1, y=PC3, shape=CurrentSp, colour=Region)) + 
+ventral.plot2 <- ggplot(ventral.pc.data, aes(x=PC1, y=PC3, shape=CurrentSp, colour=Region)) + 
   geom_point(alpha = 0.75) + 
   theme_bw(base_size = 7) +
   labs(shape = "Current species") +
   theme(legend.position = "NONE") +
   geom_vline(xintercept = 0, linetype='dotted', alpha = 0.8) +
-  geom_hline(yintercept = 0, linetype='dotted', alpha = 0.8)
+  geom_hline(yintercept = 0, linetype='dotted', alpha = 0.8) +
+  coord_cartesian(xlim=c(-0.07,0.07), ylim=c(-0.04,0.04))
 
-derm.plot.3 <- ggplot(pc_data, aes(x=PC1, y=PC4, shape=CurrentSp, colour=Region)) + 
+ventral.plot3 <- ggplot(ventral.pc.data, aes(x=PC1, y=PC4, shape=CurrentSp, colour=Region)) + 
   geom_point(alpha = 0.75) + 
   theme_bw(base_size = 7) +
   labs(shape = "Current species") +
   theme(legend.position = "NONE") +
   geom_vline(xintercept = 0, linetype='dotted', alpha = 0.8) +
-  geom_hline(yintercept = 0, linetype='dotted', alpha = 0.8)
+  geom_hline(yintercept = 0, linetype='dotted', alpha = 0.8) +  
+  coord_cartesian(xlim=c(-0.07,0.07), ylim=c(-0.04,0.04))
 
-derm.plot.4 <- ggplot(pc_data, aes(x=PC2, y=PC3, shape=CurrentSp, colour=Region)) + 
+ventral.plot4 <- ggplot(ventral.pc.data, aes(x=PC2, y=PC3, shape=CurrentSp, colour=Region)) + 
   geom_point(alpha = 0.75) + 
   theme_bw(base_size = 7) +
   labs(shape = "Current species") +
   theme(legend.position = "NONE") +
   geom_vline(xintercept = 0, linetype='dotted', alpha = 0.8) +
-  geom_hline(yintercept = 0, linetype='dotted', alpha = 0.8)
+  geom_hline(yintercept = 0, linetype='dotted', alpha = 0.8) +
+  coord_cartesian(xlim=c(-0.04,0.04), ylim=c(-0.04,0.04))
 
-derm.plot.5 <- ggplot(pc_data, aes(x=PC2, y=PC4, shape=CurrentSp, colour=Region)) + 
+ventral.plot5 <- ggplot(ventral.pc.data, aes(x=PC2, y=PC4, shape=CurrentSp, colour=Region)) + 
   geom_point(alpha = 0.75) + 
   theme_bw(base_size = 7) +
   labs(shape = "Current species") +
   theme(legend.position = "NONE") +
   geom_vline(xintercept = 0, linetype='dotted', alpha = 0.8) +
-  geom_hline(yintercept = 0, linetype='dotted', alpha = 0.8)
+  geom_hline(yintercept = 0, linetype='dotted', alpha = 0.8) +
+  coord_cartesian(xlim=c(-0.04,0.04), ylim=c(-0.04,0.04))
 
-derm.plot.6 <- ggplot(pc_data, aes(x=PC3, y=PC4, shape=CurrentSp, colour=Region)) + 
+ventral.plot6 <- ggplot(ventral.pc.data, aes(x=PC3, y=PC4, shape=CurrentSp, colour=Region)) + 
   geom_point(alpha = 0.75) + 
   theme_bw(base_size = 7) +
   labs(shape = "Current species") + 
   theme(legend.position = "NONE") +
   geom_vline(xintercept = 0, linetype='dotted', alpha = 0.8) +
-  geom_hline(yintercept = 0, linetype='dotted', alpha = 0.8)
+  geom_hline(yintercept = 0, linetype='dotted', alpha = 0.8) +
+  coord_cartesian(xlim=c(-0.04,0.04), ylim=c(-0.04,0.04))
 
 # Isolation of legend through creation of new plot and cowplot pkg
-derml <- ggplot(pc_data, aes(x=PC3, y=PC4, shape=CurrentSp, colour=Region)) + 
+gvvl <- ggplot(ventral.pc.data, aes(x=PC3, y=PC4, shape=CurrentSp, colour=Region)) + 
   geom_point() + 
   theme_bw(base_size = 10) +
   labs(shape = "Current species") 
 
-dermlegend <- cowplot::get_legend(derml)
+gvventrallegend <- cowplot::get_legend(gvvl)
 grid.newpage()
-grid.draw(legend)
+grid.draw(gvventrallegend)
 
-plot(legend)
+plot(gvventrallegend)
 
 layout <- "
 AABBCC###
@@ -205,73 +209,82 @@ DDEEFF###
 "
 
 # Using patchwork to make composite figure
-derm.pc.plots <- derm.plot.1 + derm.plot.2 + derm.plot.3 + derm.plot.4 + derm.plot.5 + 
-  derm.plot.6 + dermlegend + plot_layout(design = layout)
+vderm.pc.plots <- ventral.plot1 + ventral.plot2 + ventral.plot3 + ventral.plot4 + ventral.plot5 + 
+  ventral.plot6 + gvventrallegend + plot_layout(design = layout)
 
-derm.pc.plots
-ggsave("dermpcplots.png")
+vderm.pc.plots
+ggsave("ventral_dermoptera_pc_plots.png")
 
-# Plots for G.variegatus principal component analysis ----
+# ## Plots for ventral G.variegatus principal component analysis ----
 
-sunda.plot.1 <- ggplot(sunda_pc_data, aes(x=PC1, y=PC2, colour=Region)) + 
-  geom_point(alpha = 0.75) + 
-  theme_bw(base_size = 7) +
-theme(legend.position = "NONE") +
-  geom_vline(xintercept = 0, linetype='dotted', alpha = 0.8) +
-  geom_hline(yintercept = 0, linetype='dotted', alpha = 0.8)
-
-sunda.plot.2 <- ggplot(sunda_pc_data, aes(x=PC1, y=PC3, colour=Region)) + 
+gv.ventral.plot1 <- ggplot(ventral.gv.pc.data, aes(x=PC1, y=PC2, colour=Region)) + 
   geom_point(alpha = 0.75) + 
   theme_bw(base_size = 7) +
   theme(legend.position = "NONE") +
   geom_vline(xintercept = 0, linetype='dotted', alpha = 0.8) +
-  geom_hline(yintercept = 0, linetype='dotted', alpha = 0.8)
+  geom_hline(yintercept = 0, linetype='dotted', alpha = 0.8) +
+  coord_cartesian(xlim=c(-0.04,0.04), ylim=c(-0.04,0.04))
 
-sunda.plot.3 <- ggplot(sunda_pc_data, aes(x=PC1, y=PC4, colour=Region)) + 
+
+gv.ventral.plot2 <- ggplot(ventral.gv.pc.data, aes(x=PC1, y=PC3, colour=Region)) + 
   geom_point(alpha = 0.75) + 
   theme_bw(base_size = 7) +
   theme(legend.position = "NONE") +
   geom_vline(xintercept = 0, linetype='dotted', alpha = 0.8) +
-  geom_hline(yintercept = 0, linetype='dotted', alpha = 0.8)
+  geom_hline(yintercept = 0, linetype='dotted', alpha = 0.8) +
+  coord_cartesian(xlim=c(-0.04,0.04), ylim=c(-0.04,0.04))
 
-sunda.plot.4 <- ggplot(sunda_pc_data, aes(x=PC2, y=PC3, colour=Region)) + 
+
+gv.ventral.plot3 <- ggplot(ventral.gv.pc.data, aes(x=PC1, y=PC4, colour=Region)) + 
+  geom_point(alpha = 0.75) + 
+  theme_bw(base_size = 7) +
+  theme(legend.position = "NONE") +
+  geom_vline(xintercept = 0, linetype='dotted', alpha = 0.8) +
+  geom_hline(yintercept = 0, linetype='dotted', alpha = 0.8) +
+  coord_cartesian(xlim=c(-0.04,0.04), ylim=c(-0.04,0.04))
+
+gv.ventral.plot4 <- ggplot(ventral.gv.pc.data, aes(x=PC2, y=PC3, colour=Region)) + 
   geom_point(alpha = 0.75) + 
   theme_bw(base_size = 7) +
   scale_x_continuous(breaks = c(-0.02, 0, 0.02, 0.04)) +
   theme(legend.position = "NONE")+
   geom_vline(xintercept = 0, linetype='dotted', alpha = 0.8) +
-  geom_hline(yintercept = 0, linetype='dotted', alpha = 0.8)
+  geom_hline(yintercept = 0, linetype='dotted', alpha = 0.8) +
+  coord_cartesian(xlim=c(-0.04,0.04), ylim=c(-0.04,0.04))
 
-sunda.plot.5 <- ggplot(sunda_pc_data, aes(x=PC2, y=PC4, colour=Region)) + 
+gv.ventral.plot5 <- ggplot(ventral.gv.pc.data, aes(x=PC2, y=PC4, colour=Region)) + 
   geom_point(alpha = 0.75) + 
   theme_bw(base_size = 7) +
   scale_x_continuous(breaks = c(-0.02, 0, 0.02, 0.04)) +
   theme(legend.position = "NONE")+
   geom_vline(xintercept = 0, linetype='dotted', alpha = 0.8) +
-  geom_hline(yintercept = 0, linetype='dotted', alpha = 0.8)
+  geom_hline(yintercept = 0, linetype='dotted', alpha = 0.8) +
+  coord_cartesian(xlim=c(-0.04,0.04), ylim=c(-0.04,0.04))
 
-sunda.plot.6 <- ggplot(sunda_pc_data, aes(x=PC3, y=PC4, colour=Region)) + 
+
+gv.ventral.plot6 <- ggplot(ventral.gv.pc.data, aes(x=PC3, y=PC4, colour=Region)) + 
   geom_point(alpha = 0.75) + 
   theme_bw(base_size = 7) +
   scale_x_continuous(breaks = c(-0.02, 0, 0.02)) +
   theme(legend.position = "NONE")+
   geom_vline(xintercept = 0, linetype='dotted', alpha = 0.8) +
-  geom_hline(yintercept = 0, linetype='dotted', alpha = 0.8)
+  geom_hline(yintercept = 0, linetype='dotted', alpha = 0.8) +
+  coord_cartesian(xlim=c(-0.04,0.04), ylim=c(-0.04,0.04))
 
-sundal <- ggplot(sunda_pc_data, aes(x=PC3, y=PC4, colour=Region)) + 
+gvdorsallegend <- ggplot(ventral.gv.pc.data, aes(x=PC3, y=PC4, colour=Region)) + 
   geom_point(alpha = 0.75) + 
   theme_bw(base_size = 10) 
 
-sundalegend <- cowplot::get_legend(sundal)
+gv.dorsal.legend <- cowplot::get_legend(gvdorsallegend)
 grid.newpage()
-grid.draw(sundalegend)
-plot(sundalegend)
+grid.draw(gv.dorsal.legend)
+plot(gv.dorsal.legend)
 
-sunda.pc.plots <- sunda.plot.1 + sunda.plot.2 + sunda.plot.3 + sunda.plot.4 + sunda.plot.5 +
-  sunda.plot.6 + sundalegend + plot_layout(design = layout)
+ventral.gv.pc.plots <- gv.ventral.plot1 + gv.ventral.plot2 + gv.ventral.plot3 + gv.ventral.plot4 +
+  gv.ventral.plot5 + gv.ventral.plot6 + gv.dorsal.legend + plot_layout(design = layout)
 
-sunda.pc.plots
-ggsave("sundapcplots.png")
+ventral.gv.pc.plots
+ggsave("ventral_gv_pc_plots.png")
 
 # Composite PCA plots ----
 composite.pc.plot.data <- pc_data %>%
@@ -311,5 +324,5 @@ options(max.print = 20)
 ## Aesthetics(X var, Y Var, shape based variable, colour based variable)
 ## geom_label(aes(label=XX))
 # Write PC scores to new csv files ----
-write_csv(pc_data, file = "Rawdata/colugo-pca-data-dorsal.csv") 
-write_csv(sunda_pc_data, file = "Rawdata/variegatus-pca-data-dorsal.csv") 
+write_csv(pc_data, file = "Rawdata/colugo-pca-data-ventral.csv") 
+write_csv(sunda_pc_data, file = "Rawdata/variegatus-pca-data-ventral.csv") 
