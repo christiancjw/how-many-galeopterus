@@ -103,12 +103,12 @@ colnames(dorsal.gv.pc.scores) <- gsub("Comp", "PC", colnames(dorsal.gv.pc.scores
 dorsal.pc.data <- full_join(dorsal.pc.scores, metadata, by = c("specimenID" = "Dorsal.ID"))
 dorsal.gv.pc.data.unfixed <- full_join(dorsal.gv.pc.scores, metadata, by = c("specimenID" = "Dorsal.ID"))
 
-gv.pc.data <- dorsal.gv.pc.data.unfixed %>% 
+dorsal.gv.pc.data <- dorsal.gv.pc.data.unfixed %>% 
   filter(!Region == "Philippines")
 
 # Write PC scores to new csv files ----
-write_csv(dorsal.pc.data, file = "Rawdata/colugo-pca-data-dorsal.csv") 
-write_csv(gv.pc.data, file = "Rawdata/variegatus-pca-data-dorsal.csv") 
+write_csv(dorsal.pc.data, file = "Rawdata/dorsal_dermoptera_pca_data.csv") 
+write_csv(dorsal.gv.pc.data, file = "Rawdata/dorsal_variegatus_pca_data.csv") 
 
 # Creation of wireframes ----
 
@@ -222,7 +222,7 @@ ggsave("dorsal_dermoptera_pc_plots.png")
 
 # Plots for dorsal G.variegatus principal component analysis ----
 
-gv.dorsal.plot1 <- ggplot(gv.pc.data, aes(x=PC1, y=PC2, colour=Region)) + 
+gv.dorsal.plot1 <- ggplot(dorsal.gv.pc.data, aes(x=PC1, y=PC2, colour=Region)) + 
   geom_point(alpha = 0.75) + 
   theme_bw(base_size = 7) +
   theme(legend.position = "NONE") +
@@ -230,7 +230,7 @@ gv.dorsal.plot1 <- ggplot(gv.pc.data, aes(x=PC1, y=PC2, colour=Region)) +
   geom_hline(yintercept = 0, linetype='dotted', alpha = 0.8) +
   coord_cartesian(xlim=c(-0.04,0.04), ylim=c(-0.05,0.05))
 
-gv.dorsal.plot2 <- ggplot(gv.pc.data, aes(x=PC1, y=PC3, colour=Region)) + 
+gv.dorsal.plot2 <- ggplot(dorsal.gv.pc.data, aes(x=PC1, y=PC3, colour=Region)) + 
   geom_point(alpha = 0.75) + 
   theme_bw(base_size = 7) +
   theme(legend.position = "NONE") +
@@ -238,7 +238,7 @@ gv.dorsal.plot2 <- ggplot(gv.pc.data, aes(x=PC1, y=PC3, colour=Region)) +
   geom_hline(yintercept = 0, linetype='dotted', alpha = 0.8) +
   coord_cartesian(xlim=c(-0.04,0.04), ylim=c(-0.04,0.04))
 
-gv.dorsal.plot3 <- ggplot(gv.pc.data, aes(x=PC1, y=PC4, colour=Region)) + 
+gv.dorsal.plot3 <- ggplot(dorsal.gv.pc.data, aes(x=PC1, y=PC4, colour=Region)) + 
   geom_point(alpha = 0.75) + 
   theme_bw(base_size = 7) +
   theme(legend.position = "NONE") +
@@ -246,7 +246,7 @@ gv.dorsal.plot3 <- ggplot(gv.pc.data, aes(x=PC1, y=PC4, colour=Region)) +
   geom_hline(yintercept = 0, linetype='dotted', alpha = 0.8) +
   coord_cartesian(xlim=c(-0.04,0.04), ylim=c(-0.04,0.04))
 
-gv.dorsal.plot4 <- ggplot(gv.pc.data, aes(x=PC2, y=PC3, colour=Region)) + 
+gv.dorsal.plot4 <- ggplot(dorsal.gv.pc.data, aes(x=PC2, y=PC3, colour=Region)) + 
   geom_point(alpha = 0.75) + 
   theme_bw(base_size = 7) +
   scale_x_continuous(breaks = c(-0.02, 0, 0.02, 0.04)) +
@@ -255,7 +255,7 @@ gv.dorsal.plot4 <- ggplot(gv.pc.data, aes(x=PC2, y=PC3, colour=Region)) +
   geom_hline(yintercept = 0, linetype='dotted', alpha = 0.8) +
   coord_cartesian(xlim=c(-0.04,0.04), ylim=c(-0.04,0.04))
 
-gv.dorsal.plot5 <- ggplot(gv.pc.data, aes(x=PC2, y=PC4, colour=Region)) + 
+gv.dorsal.plot5 <- ggplot(dorsal.gv.pc.data, aes(x=PC2, y=PC4, colour=Region)) + 
   geom_point(alpha = 0.75) + 
   theme_bw(base_size = 7) +
   scale_x_continuous(breaks = c(-0.02, 0, 0.02, 0.04)) +
@@ -264,7 +264,7 @@ gv.dorsal.plot5 <- ggplot(gv.pc.data, aes(x=PC2, y=PC4, colour=Region)) +
   geom_hline(yintercept = 0, linetype='dotted', alpha = 0.8) +
   coord_cartesian(xlim=c(-0.04,0.04), ylim=c(-0.04,0.04))
 
-gv.dorsal.plot6 <- ggplot(gv.pc.data, aes(x=PC3, y=PC4, colour=Region)) + 
+gv.dorsal.plot6 <- ggplot(dorsal.gv.pc.data, aes(x=PC3, y=PC4, colour=Region)) + 
   geom_point(alpha = 0.75) + 
   theme_bw(base_size = 7) +
   scale_x_continuous(breaks = c(-0.02, 0, 0.02)) +
@@ -273,7 +273,7 @@ gv.dorsal.plot6 <- ggplot(gv.pc.data, aes(x=PC3, y=PC4, colour=Region)) +
   geom_hline(yintercept = 0, linetype='dotted', alpha = 0.8) +
   coord_cartesian(xlim=c(-0.04,0.04), ylim=c(-0.04,0.04))
 
-gvdl <- ggplot(gv.pc.data, aes(x=PC3, y=PC4, colour=Region)) + 
+gvdl <- ggplot(dorsal.gv.pc.data, aes(x=PC3, y=PC4, colour=Region)) + 
   geom_point(alpha = 0.75) + 
   theme_bw(base_size = 10) 
 

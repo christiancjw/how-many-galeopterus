@@ -107,6 +107,10 @@ ventral.gv.pc.data <- ventral.gv.pc.data.unfixed %>%
   filter(!Region == "Philippines")
 
 
+# Write PC scores to new csv files ----
+write_csv(dorsal.pc.data, file = "Rawdata/ventral_dermoptera_pca_data.csv") 
+write_csv(gv.pc.data, file = "Rawdata/ventral_variegatus_pca_data.csv") 
+
 # Creation of wireframes ----
 
 ## Plot a reference shape
@@ -215,7 +219,7 @@ vderm.pc.plots <- ventral.plot1 + ventral.plot2 + ventral.plot3 + ventral.plot4 
 vderm.pc.plots
 ggsave("ventral_dermoptera_pc_plots.png")
 
-# ## Plots for ventral G.variegatus principal component analysis ----
+# Plots for ventral G.variegatus principal component analysis ----
 
 gv.ventral.plot1 <- ggplot(ventral.gv.pc.data, aes(x=PC1, y=PC2, colour=Region)) + 
   geom_point(alpha = 0.75) + 
@@ -323,6 +327,3 @@ options(max.print = 20)
 
 ## Aesthetics(X var, Y Var, shape based variable, colour based variable)
 ## geom_label(aes(label=XX))
-# Write PC scores to new csv files ----
-write_csv(pc_data, file = "Rawdata/colugo-pca-data-ventral.csv") 
-write_csv(sunda_pc_data, file = "Rawdata/variegatus-pca-data-ventral.csv") 
