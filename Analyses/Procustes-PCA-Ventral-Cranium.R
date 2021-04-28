@@ -108,8 +108,8 @@ ventral.gv.pc.data <- ventral.gv.pc.data.unfixed %>%
 
 
 # Write PC scores to new csv files ----
-write_csv(dorsal.pc.data, file = "Rawdata/ventral_dermoptera_pca_data.csv") 
-write_csv(gv.pc.data, file = "Rawdata/ventral_variegatus_pca_data.csv") 
+write_csv(ventral.pc.data, file = "Rawdata/ventral_dermoptera_pca_data.csv") 
+write_csv(ventral.gv.pc.data, file = "Rawdata/ventral_variegatus_pca_data.csv") 
 
 # Creation of wireframes ----
 
