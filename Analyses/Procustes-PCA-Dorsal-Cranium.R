@@ -306,13 +306,12 @@ megaplot_plot <-
   geom_jitter(alpha = 0.7) +
   theme_bw(base_size = 14) +
   scale_color_manual(values = c("#083D77", "#65532F", "#63B0CD", "#8AB17D", "#E9C46A", "#E94F37", "#0CF574")) +
-  ylim(-0.2,0.2) +
+  ylim(-0.05,0.1) +
   coord_flip() +
   xlab("PC axis") +
   ylab("PC score") +
   labs(shape = "Current species")
 
-xlim(-0.1,0.1)
   
 megaplot_plot
 
