@@ -139,6 +139,8 @@ plotRefToTarget(sunda.ventral.ref, ventral.pca.gv.landmarks$shapes$shapes.comp3$
 
 ventral.plot1 <- ggplot(ventral.pc.data, aes(x=PC1, y=PC2, shape=CurrentSp, colour=Region)) + 
   geom_point(alpha = 0.75) + 
+  scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#AF58BA", "#FFC61E")) +
+  scale_color_manual(values = c("#FF155B", "#00CD6C", "#009ADE", "#AF58BA", "#FFC61E")) +
   theme_bw(base_size = 7) +
   labs(shape = "Current species") + 
   theme(legend.position = "NONE") +
@@ -148,6 +150,8 @@ ventral.plot1 <- ggplot(ventral.pc.data, aes(x=PC1, y=PC2, shape=CurrentSp, colo
 
 ventral.plot2 <- ggplot(ventral.pc.data, aes(x=PC1, y=PC3, shape=CurrentSp, colour=Region)) + 
   geom_point(alpha = 0.75) + 
+  scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#AF58BA", "#FFC61E")) +
+  scale_color_manual(values = c("#FF155B", "#00CD6C", "#009ADE", "#AF58BA", "#FFC61E")) +
   theme_bw(base_size = 7) +
   labs(shape = "Current species") +
   theme(legend.position = "NONE") +
@@ -157,6 +161,8 @@ ventral.plot2 <- ggplot(ventral.pc.data, aes(x=PC1, y=PC3, shape=CurrentSp, colo
 
 ventral.plot3 <- ggplot(ventral.pc.data, aes(x=PC1, y=PC4, shape=CurrentSp, colour=Region)) + 
   geom_point(alpha = 0.75) + 
+  scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#AF58BA", "#FFC61E")) +
+  scale_color_manual(values = c("#FF155B", "#00CD6C", "#009ADE", "#AF58BA", "#FFC61E")) +
   theme_bw(base_size = 7) +
   labs(shape = "Current species") +
   theme(legend.position = "NONE") +
@@ -166,6 +172,8 @@ ventral.plot3 <- ggplot(ventral.pc.data, aes(x=PC1, y=PC4, shape=CurrentSp, colo
 
 ventral.plot4 <- ggplot(ventral.pc.data, aes(x=PC2, y=PC3, shape=CurrentSp, colour=Region)) + 
   geom_point(alpha = 0.75) + 
+  scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#AF58BA", "#FFC61E")) +
+  scale_color_manual(values = c("#FF155B", "#00CD6C", "#009ADE", "#AF58BA", "#FFC61E")) +
   theme_bw(base_size = 7) +
   labs(shape = "Current species") +
   theme(legend.position = "NONE") +
@@ -175,6 +183,8 @@ ventral.plot4 <- ggplot(ventral.pc.data, aes(x=PC2, y=PC3, shape=CurrentSp, colo
 
 ventral.plot5 <- ggplot(ventral.pc.data, aes(x=PC2, y=PC4, shape=CurrentSp, colour=Region)) + 
   geom_point(alpha = 0.75) + 
+  scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#AF58BA", "#FFC61E")) +
+  scale_color_manual(values = c("#FF155B", "#00CD6C", "#009ADE", "#AF58BA", "#FFC61E")) +
   theme_bw(base_size = 7) +
   labs(shape = "Current species") +
   theme(legend.position = "NONE") +
@@ -184,6 +194,8 @@ ventral.plot5 <- ggplot(ventral.pc.data, aes(x=PC2, y=PC4, shape=CurrentSp, colo
 
 ventral.plot6 <- ggplot(ventral.pc.data, aes(x=PC3, y=PC4, shape=CurrentSp, colour=Region)) + 
   geom_point(alpha = 0.75) + 
+  scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#AF58BA", "#FFC61E")) +
+  scale_color_manual(values = c("#FF155B", "#00CD6C", "#009ADE", "#AF58BA", "#FFC61E")) +
   theme_bw(base_size = 7) +
   labs(shape = "Current species") + 
   theme(legend.position = "NONE") +
@@ -223,6 +235,8 @@ ggsave("ventral_dermoptera_pc_plots.png")
 
 gv.ventral.plot1 <- ggplot(ventral.gv.pc.data, aes(x=PC1, y=PC2, colour=Region)) + 
   geom_point(alpha = 0.75) + 
+  scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
+  scale_color_manual(values = c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
   theme_bw(base_size = 7) +
   theme(legend.position = "NONE") +
   geom_vline(xintercept = 0, linetype='dotted', alpha = 0.8) +
@@ -232,6 +246,8 @@ gv.ventral.plot1 <- ggplot(ventral.gv.pc.data, aes(x=PC1, y=PC2, colour=Region))
 
 gv.ventral.plot2 <- ggplot(ventral.gv.pc.data, aes(x=PC1, y=PC3, colour=Region)) + 
   geom_point(alpha = 0.75) + 
+  scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
+  scale_color_manual(values = c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
   theme_bw(base_size = 7) +
   theme(legend.position = "NONE") +
   geom_vline(xintercept = 0, linetype='dotted', alpha = 0.8) +
@@ -241,6 +257,8 @@ gv.ventral.plot2 <- ggplot(ventral.gv.pc.data, aes(x=PC1, y=PC3, colour=Region))
 
 gv.ventral.plot3 <- ggplot(ventral.gv.pc.data, aes(x=PC1, y=PC4, colour=Region)) + 
   geom_point(alpha = 0.75) + 
+  scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
+  scale_color_manual(values = c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
   theme_bw(base_size = 7) +
   theme(legend.position = "NONE") +
   geom_vline(xintercept = 0, linetype='dotted', alpha = 0.8) +
@@ -249,6 +267,8 @@ gv.ventral.plot3 <- ggplot(ventral.gv.pc.data, aes(x=PC1, y=PC4, colour=Region))
 
 gv.ventral.plot4 <- ggplot(ventral.gv.pc.data, aes(x=PC2, y=PC3, colour=Region)) + 
   geom_point(alpha = 0.75) + 
+  scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
+  scale_color_manual(values = c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
   theme_bw(base_size = 7) +
   scale_x_continuous(breaks = c(-0.02, 0, 0.02, 0.04)) +
   theme(legend.position = "NONE")+
@@ -258,6 +278,8 @@ gv.ventral.plot4 <- ggplot(ventral.gv.pc.data, aes(x=PC2, y=PC3, colour=Region))
 
 gv.ventral.plot5 <- ggplot(ventral.gv.pc.data, aes(x=PC2, y=PC4, colour=Region)) + 
   geom_point(alpha = 0.75) + 
+  scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
+  scale_color_manual(values = c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
   theme_bw(base_size = 7) +
   scale_x_continuous(breaks = c(-0.02, 0, 0.02, 0.04)) +
   theme(legend.position = "NONE")+
@@ -268,6 +290,8 @@ gv.ventral.plot5 <- ggplot(ventral.gv.pc.data, aes(x=PC2, y=PC4, colour=Region))
 
 gv.ventral.plot6 <- ggplot(ventral.gv.pc.data, aes(x=PC3, y=PC4, colour=Region)) + 
   geom_point(alpha = 0.75) + 
+  scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
+  scale_color_manual(values = c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
   theme_bw(base_size = 7) +
   scale_x_continuous(breaks = c(-0.02, 0, 0.02)) +
   theme(legend.position = "NONE")+
@@ -291,33 +315,61 @@ ventral.gv.pc.plots
 ggsave("ventral_gv_pc_plots.png")
 
 # Composite PCA plots ----
-composite.pc.plot.data <- pc_data %>%
+
+# Dermoptera Composite plot data processing (PCs up to 85%)
+composite.ventral.data <- ventral.pc.data %>%
   dplyr::select(CurrentSp, Region, PC1:PC19) %>%
   pivot_longer(PC1:PC18, "PC", "value") %>%
   mutate(PC = factor(PC, levels = c("PC1", "PC2", "PC3", "PC4", "PC5", "PC6",
                                     "PC7", "PC8", "PC9", "PC10", "PC11", "PC12",
                                     "PC13", "PC14", "PC15", "PC16", "PC17", "PC18"))) 
-
-composite.pc.plot.data
-
-
-megaplot_plot <- 
-  ggplot(composite.pc.plot.data, aes(x = PC, y = value, colour = Region, shape = CurrentSp)) +
-  scale_fill_manual(values=c("#083D77", "#65532F", "#63B0CD", "#8AB17D", "#E9C46A", "#E94F37", "#0CF574"))+
+# Processed Data
+composite.ventral.data
+# Plotting
+ventral.composite.pc.plot <- 
+  ggplot(composite.ventral.data, aes(x = PC, y = value, colour = Region, shape = CurrentSp)) +
+  scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#AF58BA", "#FFC61E"))+
   geom_boxplot() +
-  geom_jitter(alpha = 0.7) +
+  geom_jitter(alpha = 0.5) +
   theme_bw(base_size = 14) +
-  scale_color_manual(values = c("#083D77", "#65532F", "#63B0CD", "#8AB17D", "#E9C46A", "#E94F37", "#0CF574")) +
-  ylim(-0.2,0.2) +
+  scale_color_manual(values = c("#FF155B", "#00CD6C", "#009ADE", "#AF58BA", "#FFC61E")) +
+  ylim(-0.05,0.1) +
   coord_flip() +
   xlab("PC axis") +
   ylab("PC score") +
-  labs(shape = "Current species") +
-  xlim(-0.1,0.1)
+  labs(shape = "Current species") + 
+  theme(legend.position = "NONE") 
+#Check
+ventral.composite.pc.plot
+ggsave(file = "figures/ventral_derm_composite_plot.png", width = 5, height = 8, dpi = 900)
 
-xlim(-0.1,0.1)
-  
-megaplot_plot
+
+# Dermoptera Composite plot data processing
+Ventral.gv.pc.plot.data <- ventral.gv.pc.data %>%
+  dplyr::select(Region, PC1:PC20) %>%
+  pivot_longer(PC1:PC19, "PC", "value") %>%
+  mutate(PC = factor(PC, levels = c("PC1", "PC2", "PC3", "PC4", "PC5", "PC6",
+                                    "PC7", "PC8", "PC9", "PC10", "PC11", "PC12",
+                                    "PC13", "PC14", "PC15", "PC16", "PC17", "PC18", "PC19"))) 
+# Processed Data
+Ventral.gv.pc.plot.data
+# Plotting
+Ventral.gv.composite.pc.plot <- 
+  ggplot(Ventral.gv.pc.plot.data, aes(x = PC, y = value, colour = Region)) +
+  scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E"))+
+  geom_boxplot() +
+  geom_jitter(alpha = 0.5) +
+  theme_bw(base_size = 14) +
+  scale_color_manual(values = c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
+  ylim(-0.05,0.05) +
+  coord_flip() +
+  xlab("PC axis") +
+  ylab("PC score") + 
+  theme(legend.position = "NONE")
+#Check
+Ventral.gv.composite.pc.plot
+ggsave(file = "figures/ventral_gv_composite_plot.png", width = 5, height = 8, dpi = 900)
+
 
 # Misc Code ----
   geom_label(aes(label=SpecimenID))
