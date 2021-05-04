@@ -1,106 +1,152 @@
 # Input of data ----
 
 ## Reading in of dorsal data
-dorsal.pc.data <- read_csv(file = "Rawdata/dorsal_dermoptera_pca_data.csv")
-dorsal.gv.pc.data <- read_csv(file = "Rawdata/dorsal_variegatus_pca_data.csv")
+d.pcdata.derm<- read_csv(file = "Rawdata/csvfiles/dorsal_dermoptera_pca_data.csv")
+d.pcdata.gv <- read_csv(file = "Rawdata/csvfiles/dorsal_variegatus_pca_data.csv")
+d.pcdata.mainl <- read_csv(file = "Rawdata/csvfiles/dorsal_mainland_pca_data.csv")
 
 ## Reading in of ventral data
-ventral.pc.data <- read_csv(file = "Rawdata/ventral_dermoptera_pca_data.csv")
-ventral.gv.pc.data <- read_csv(file = "Rawdata/ventral_variegatus_pca_data.csv")
+v.pcdata.derm <- read_csv(file = "Rawdata/csvfiles/ventral_dermoptera_pca_data.csv")
+v.pcdata.gv <- read_csv(file = "Rawdata/csvfiles/ventral_variegatus_pca_data.csv")
+v.pcdata.mainl <- read_csv(file = "Rawdata/csvfiles/ventral_mainland_pca_data.csv")
 
 # Multivariate analysis of variance for dorsal Dermoptera data ----
 
 # MANOVA of Dermoptera PCA data by species (Philippine vs Sunda)
 # As matrix allows the use of multiple PC columns
-# DD = Dorsal Dermoptera
-DD.species.manova <- manova(as.matrix(dorsal.pc.data[,2:19]) ~ CurrentSp,
-                   data = dorsal.pc.data)
-summary(DD.species.manova)
+derm.manova.dorsal.species <- manova(as.matrix(d.pcdata.derm[,2:19]) ~ CurrentSp,
+                   data = d.pcdata.derm)
+summary(derm.manova.dorsal.species)
 
 # MANOVA of Dermopetra PCA data by region
-DD.region.manova <- manova(as.matrix(dorsal.pc.data[,2:19]) ~ Region,
-                      data = dorsal.pc.data)
-summary(DD.region.manova)
+derm.manova.dorsal.region <- manova(as.matrix(d.pcdata.derm[,2:19]) ~ Region,
+                      data = d.pcdata.derm)
+summary(derm.manova.dorsal.region)
 
 # MANOVA of Dermoptera PCA data by sex
-DD.sex.manova <- manova(as.matrix(dorsal.pc.data[,2:19]) ~ Sex,
-                        data = dorsal.pc.data)
-summary(DD.sex.manova)
+derm.manova.dorsal.sex <- manova(as.matrix(d.pcdata.derm[,2:19]) ~ Sex,
+                        data = d.pcdata.derm)
+summary(derm.manova.dorsal.sex)
 
 # MANOVA of Dermopetra PCA data by date photographed 
 ## DV = Dorsal Vareigatus
-DD.date.manova <- manova(as.matrix(dorsal.pc.data[,2:19]) ~ Date.Photographed,
-                        data = dorsal.pc.data)
-summary(DD.date.manova)
+derm.manova.dorsal.date <- manova(as.matrix(d.pcdata.derm[,2:19]) ~ Date.Photographed,
+                        data = d.pcdata.derm)
+summary(derm.manova.dorsal.date)
 
 # Multivariate analysis of variance for dorsal G.variegatus data ----
 
 # MANOVA of G.variegatus PCA data by region
-DV.region.manova <- manova(as.matrix(dorsal.gv.pc.data[,2:20]) ~ Region,
-                       data = dorsal.gv.pc.data)
-summary(DV.region.manova)
+gv.manova.dorsal.region <- manova(as.matrix(d.pcdata.gv[,2:20]) ~ Region,
+                       data = d.pcdata.gv)
+summary(gv.manova.dorsal.region)
 
 # MANOVA of G.variegatus PCA data by sex
-DV.sex.manova <- manova(as.matrix(dorsal.gv.pc.data[,2:20]) ~ Sex,
-                        data = dorsal.gv.pc.data)
-summary(DV.sex.manova)
+gv.manova.dorsal.sex <- manova(as.matrix(d.pcdata.gv[,2:20]) ~ Sex,
+                        data = d.pcdata.gv)
+summary(gv.manova.dorsal.sex)
 
 # MANOVA of G.variegatus PCA data by date photographed
-DV.date.manova <- manova(as.matrix(dorsal.gv.pc.data[,2:20]) ~ Date.Photographed,
-                        data = dorsal.gv.pc.data)
-summary(DV.date.manova)
+gv.manova.dorsal.date <- manova(as.matrix(d.pcdata.gv[,2:20]) ~ Date.Photographed,
+                        data = d.pcdata.gv)
+summary(gv.manova.dorsal.date)
 
 # MANOVA of G.variegatus PCA data by sex and region
-DV.sr.manova <- manova(as.matrix(dorsal.gv.pc.data[,2:20]) ~ Sex * Region * Date.Photographed,
-                          data = dorsal.gv.pc.data)
-summary(DV.sr.manova)
+gv.manova.dorsal.sex.region <- manova(as.matrix(d.pcdata.gv[,2:20]) ~ Sex * Region * Date.Photographed,
+                          data = d.pcdata.gv)
+summary(gv.manova.dorsal.sex.region)
+
+# Multivariate analysis of variance for dorsal mainland G.v. data ----
+
+# MANOVA of mainland G.v. PCA data by region
+mainl.manova.dorsal.landmass <- manova(as.matrix(d.pcdata.mainl[,2:20]) ~ Landmass,
+                           data = d.pcdata.mainl)
+summary(mainl.manova.dorsal.landmass)
+
+# MANOVA of mainland G.v. PCA data by sex
+mainl.manova.dorsal.sex <- manova(as.matrix(d.pcdata.mainl[,2:20]) ~ Sex,
+                        data = d.pcdata.mainl)
+summary(mainl.manova.dorsal.sex)
+
+# MANOVA of mainland G.v. PCA data by date photographed
+mainl.manova.dorsal.date <- manova(as.matrix(d.pcdata.mainl[,2:20]) ~ Date.Photographed,
+                         data = d.pcdata.mainl)
+summary(mainl.manova.dorsal.date)
+
+# MANOVA of mainland G.v. PCA data by sex and region
+mainl.manova.dorsal.sex.region <- manova(as.matrix(d.pcdata.mainl[,2:20]) ~ Sex * Region * Date.Photographed,
+                       data = d.pcdata.mainl)
+summary(mainl.manova.dorsal.sex.region)
+
 
 # Multivariate analysis of variance for ventral Dermoptera data ----
 # As matrix allows the use of multiple PC columns
 # VD = Ventral Dermoptera
 
 # MANOVA of Dermoptera PCA data by species (Philippine vs Sunda)
-VD.species.manova <- manova(as.matrix(ventral.pc.data[,2:27]) ~ CurrentSp,
-                            data = ventral.pc.data)
-summary(VD.species.manova)
+derm.manova.ventral.species <- manova(as.matrix(v.pcdata.derm[,2:27]) ~ CurrentSp,
+                            data = v.pcdata.derm)
+summary(derm.manova.ventral.species)
 
 # MANOVA of Ventral Dermopetra PCA data by region
-VD.region.manova <- manova(as.matrix(ventral.pc.data[,2:27]) ~ Region,
-                           data = ventral.pc.data)
-summary(VD.region.manova)
+derm.manova.ventral.region <- manova(as.matrix(v.pcdata.derm[,2:27]) ~ Region,
+                           data = v.pcdata.derm)
+summary(derm.manova.ventral.region)
 
 # MANOVA of Ventral Dermoptera PCA data by sex
-VD.sex.manova <- manova(as.matrix(ventral.pc.data[,2:27]) ~ Sex,
-                        data = ventral.pc.data)
-summary(VD.sex.manova)
+derm.manova.ventral.sex <- manova(as.matrix(v.pcdata.derm[,2:27]) ~ Sex,
+                        data = v.pcdata.derm)
+summary(derm.manova.ventral.sex)
 
 # MANOVA of Ventral Dermopetra PCA data by date photographed 
-VD.date.manova <- manova(as.matrix(ventral.pc.data[,2:27]) ~ Date.Photographed,
-                         data = ventral.pc.data)
-summary(VD.date.manova)
+derm.manova.ventral.date <- manova(as.matrix(v.pcdata.derm[,2:27]) ~ Date.Photographed,
+                         data = v.pcdata.derm)
+summary(derm.manova.ventral.date)
 
 # Multivariate analysis of variance for ventral G.variegatus data ----
-# VV = Ventral variegatus
 
 # MANOVA of G.variegatus PCA data by region
-VV.region.manova <- manova(as.matrix(ventral.gv.pc.data[,2:20]) ~ Region,
-                           data = ventral.gv.pc.data)
-summary(VV.region.manova)
+gv.manova.ventral.region <- manova(as.matrix(v.pcdata.gv[,2:20]) ~ Region,
+                           data = v.pcdata.gv)
+summary(gv.manova.ventral.region)
 
 # MANOVA of G.variegatus PCA data by sex
-VV.sex.manova <- manova(as.matrix(ventral.gv.pc.data[,2:20]) ~ Sex,
-                        data = ventral.gv.pc.data)
+gv.manova.ventral.sex <- manova(as.matrix(v.pcdata.gv[,2:20]) ~ Sex,
+                        data = v.pcdata.gv)
 summary(VV.sex.manova)
 
 # MANOVA of G.variegatus PCA data by date photographed
-VV.date.manova <- manova(as.matrix(ventral.gv.pc.data[,2:20]) ~ Date.Photographed,
-                         data = ventral.gv.pc.data)
-summary(VV.date.manova)
+gv.manova.ventral.date <- manova(as.matrix(v.pcdata.gv[,2:20]) ~ Date.Photographed,
+                         data = v.pcdata.gv)
+summary(gv.manova.ventral.date)
 
 # MANOVA of G.variegatus PCA data by sex and region
-VV.sr.manova <- manova(as.matrix(ventral.gv.pc.data[,2:20]) ~ Sex * Region,
-                       data = ventral.gv.pc.data)
-summary(VV.sr.manova)
+gv.manova.ventral.sex.region <- manova(as.matrix(v.pcdata.gv[,2:20]) ~ Sex * Region,
+                       data = v.pcdata.gv)
+summary(gv.manova.ventral.sex.region)
+
+# Multivariate analysis of variance for ventral  mainland G.v. PCA data ----
+
+# MANOVA of mainland G.v. PCA data by landmass
+mainl.manova.ventral.landmass <- manova(as.matrix(v.pcdata.mainl[,2:20]) ~ Landmass,
+                           data = v.pcdata.mainl)
+summary(mainl.manova.ventral.landmass)
+
+# MANOVA of mainland G.v. PCA data by sex
+DV.sex.manova <- manova(as.matrix(v.pcdata.mainl[,2:20]) ~ Sex,
+                        data = v.pcdata.mainl)
+summary(DV.sex.manova)
+
+# MANOVA of mainland G.v. PCA data by date photographed
+DV.date.manova <- manova(as.matrix(v.pcdata.mainl[,2:20]) ~ Date.Photographed,
+                         data = v.pcdata.mainl)
+summary(DV.date.manova)
+
+# MANOVA of mainland G.v. PCA data by sex and region
+DV.sr.manova <- manova(as.matrix(v.pcdata.mainl[,2:20]) ~ Sex * Region * Date.Photographed,
+                       data = v.pcdata.mainl)
+summary(DV.sr.manova)
+
 
 # Misc Notes ----
 
