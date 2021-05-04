@@ -402,11 +402,11 @@ ggsave(file = "figures/ventral_gv_composite_plot.png", width = 5, height = 8, dp
 
 # Mainland Composite plot data processing
 v.compdata.mainl <- v.pcdata.mainl %>%
-  dplyr::select(Landmass, PC1:PC18) %>%
-  pivot_longer(PC1:PC17, "PC", "value") %>%
+  dplyr::select(Landmass, PC1:PC17) %>%
+  pivot_longer(PC1:PC16, "PC", "value") %>%
   mutate(PC = factor(PC, levels = c("PC1", "PC2", "PC3", "PC4", "PC5", "PC6",
                                     "PC7", "PC8", "PC9", "PC10", "PC11", "PC12",
-                                    "PC13", "PC14", "PC15", "PC16", "PC17"))) 
+                                    "PC13", "PC14", "PC15", "PC16"))) 
 
 # Processed Data
 v.compdata.mainl

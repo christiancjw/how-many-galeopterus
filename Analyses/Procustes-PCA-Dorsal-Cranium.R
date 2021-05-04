@@ -125,9 +125,9 @@ d.pcdata.mainl <- full_join(d.pcs.mainl, metadata, by = c("specimenID" = "Dorsal
   filter(!Landmass == "NA", !Region == "Philippines")
 
 # Write PC scores to new csv files ----
-write_csv(d.pcdata.derm, file = "Rawdata/dorsal_dermoptera_pca_data.csv") 
-write_csv(d.pcdata.gv, file = "Rawdata/dorsal_variegatus_pca_data.csv") 
-write_csv(d.pcdata.mainl, file = "Rawdata/dorsal_mainland_pca_data.csv") 
+write_csv(d.pcdata.derm, file = "Rawdata/csvfiles/dorsal_dermoptera_pca_data.csv") 
+write_csv(d.pcdata.gv, file = "Rawdata/csvfiles/dorsal_variegatus_pca_data.csv") 
+write_csv(d.pcdata.mainl, file = "Rawdata/csvfiles/dorsal_mainland_pca_data.csv") 
 
 
 # Creation of wireframes ----
@@ -374,6 +374,7 @@ d.compdata.gv <- d.pcdata.gv %>%
                                     "PC13", "PC14", "PC15", "PC16", "PC17", "PC18", "PC19"))) 
 # Processed Data
 d.compdata.gv
+
 # Plotting
 d.compplot.derm <- 
   ggplot(dorsal.gv.pc.plot.data, aes(x = PC, y = value, colour = Region)) +
@@ -387,22 +388,25 @@ d.compplot.derm <-
   coord_flip() +
   xlab("PC axis") +
   ylab("PC score") 
+
 #Check
 d.compplot.derm
 ggsave(file = "figures/dorsal_gv_composite_plot.png", width = 5, height = 8, dpi = 900)
 
 # Mainland Composite plot data processing
 d.compdata.mainl <- d.pcdata.mainl %>%
-  dplyr::select(Landmass, PC1:PC18) %>%
-  pivot_longer(PC1:PC17, "PC", "value") %>%
+  dplyr::select(Landmass, PC1:PC17) %>%
+  pivot_longer(PC1:PC16, "PC", "value") %>%
   mutate(PC = factor(PC, levels = c("PC1", "PC2", "PC3", "PC4", "PC5", "PC6",
                                     "PC7", "PC8", "PC9", "PC10", "PC11", "PC12",
-                                    "PC13", "PC14", "PC15", "PC16", "PC17"))) 
+                                    "PC13", "PC14", "PC15", "PC16"))) 
+
 # Processed Data
 d.compdata.mainl
+
 # Plotting
 d.compplot.mainl <- 
-  ggplot(composite.dorsal.mainland.data, aes(x = PC, y = value, colour = Landmass)) +
+  ggplot(d.compdata.mainl, aes(x = PC, y = value, colour = Landmass)) +
   scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E"))+
   geom_boxplot() +
   geom_jitter(alpha = 0.5) +
@@ -413,8 +417,10 @@ d.compplot.mainl <-
   xlab("PC axis") +
   theme(legend.position = "NONE")+
   ylab("PC score") 
+
 #Check
 d.compplot.mainl
+
 ggsave(file = "figures/dorsal_mainland_composite_plot.png", width = 5, height = 8, dpi = 900)
 
 #
