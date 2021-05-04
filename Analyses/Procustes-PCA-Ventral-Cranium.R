@@ -121,9 +121,9 @@ v.pcdata.mainl <- full_join(v.pcs.mainl, metadata, by = c("specimenID" = "Ventra
   filter(!Landmass == "NA", !Region == "Philippines")
 
 # Write PC scores to new csv files ----
-write_csv(v.pcdata.derm, file = "Rawdata/ventral_dermoptera_pca_data.csv") 
-write_csv(v.pcdata.gv, file = "Rawdata/ventral_variegatus_pca_data.csv") 
-write_csv(v.pcdata.mainl, file = "Rawdata/ventral_mainland_pca_data.csv") 
+write_csv(v.pcdata.derm, file = "Rawdata/csvfiles/ventral_dermoptera_pca_data.csv") 
+write_csv(v.pcdata.gv, file = "Rawdata/csvfiles/ventral_variegatus_pca_data.csv") 
+write_csv(v.pcdata.mainl, file = "Rawdata/csvfiles/ventral_mainland_pca_data.csv") 
 
 # Creation of wireframes ----
 
