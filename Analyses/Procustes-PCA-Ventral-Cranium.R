@@ -19,44 +19,51 @@ library(cowplot)
 
 # TPS file created from scaled landmarks measured in ImageJ
 # Read in landmark coordinates
-ventral.lands <- readland.tps(file = "Rawdata/ventral.crania.tps", specID = "ID")
-ventral.lands
+v.lands.derm <- readland.tps(file = "Rawdata/ventral.derm.crania.tps", specID = "ID")
+v.lands.derm
 
 # Input of only G. variegatus tps data
-ventral.gv.lands <- readland.tps(file = "Rawdata/sunda.ventral.crania.tps", specID = "ID")
-ventral.gv.lands
+v.lands.gv <- readland.tps(file = "Rawdata/ventral.sunda.crania.tps", specID = "ID")
+v.lands.gv
+
+#input of G.v. mainland data
+v.lands.mainl <- readland.tps(file = "Rawdata/ventral.mainland.crania.tps", specID = "ID")
+v.lands.mainl
+
 
 # Plot raw y against raw x (Without procrustes - plotted points represent landmarks prior
 ## to rotation and scaling)
-plot(ventral.lands[,2,]~ventral.lands[,1,])
-
-# Plot G. Varigatus raw points
-plot(ventral.gv.lands[,2,]~ventral.gv.lands[,1,])
+plot(v.lands.derm[,2,]~v.lands.derm[,1,])
+plot(v.lands.gv[,2,]~v.lands.gv[,1,])
+plot(v.lands.mainl[,2,]~v.lands.mainl[,1,])
 
 # Normalisation of data through Generalised Procustes Analysis ----
 ## Procrustes analyses - uses reference specimen to line up all specimens 
-gpa.ventral.lands <- gpagen(ventral.lands)
-
-# Same with G. variegatus data
-gpa.ventral.gv.lands <- gpagen(ventral.gv.lands)
+v.gpal.derm <- gpagen(v.lands.derm)
+v.gpal.gv <- gpagen(v.lands.gv)
+v.gpal.mainl <- gpagen(v.lands.mainl)
 
 # Visualising procrustes analysis ----
 
 # Black points are mean position of coordinates with grey points showing variation
-plot(gpa.ventral.lands)
-plot(gpa.ventral.gv.lands)
+plot(v.gpal.derm)
+plot(v.gpal.gv)
+plot(v.gpal.mainl)
 
 # Shows average landmark coordinates
-gpa.ventral.lands
-gpa.ventral.gv.lands
+v.gpal.derm
+v.gpal.gv
+v.gpal.mainl
 
 # Shows the scaled coordinates of all specimens
-gpa.ventral.lands$coords
-gpa.ventral.gv.lands$coords
+v.gpal.derm$coords
+v.gpal.gv$coords
+v.gpal.mainl$coords
 
 # Expanded information of gpa.lands. (Str:structure)
-str(gpa.ventral.lands)
-str(gpa.ventral.gv.lands)
+str(v.gpal.derm)
+str(v.gpal.gv)
+str(v.gpal.mainl)
 
 # Reading in of metadata ----
 metadata <- read.csv("Rawdata/dermopteradata.csv")
@@ -66,18 +73,19 @@ glimpse(metadata)
 
 # PCA Analysis (Geomorph Principal and phylogenetically-aligned 
 ## components analysis of shape data)
-ventral.pca.landmarks <- gm.prcomp(gpa.ventral.lands$coords)
-
-# Ditto for G.variegatus data
-ventral.pca.gv.landmarks <- gm.prcomp(gpa.ventral.gv.lands$coords)
+v.pcal.derm <- gm.prcomp(v.gpal.derm$coords)
+v.pcal.gv <- gm.prcomp(v.gpal.gv$coords)
+v.pcal.mainl  <- gm.prcomp(v.gpal.mainl$coords)
 
 # How many PCs to include up to 95%? 
-summary(ventral.pca.landmarks)
-summary(ventral.pca.gv.landmarks)
+summary(v.pcal.derm)
+summary(v.pcal.gv)
+summary(v.pcal.mainl)
 
 ## Which landmarks are contributing towards each principle component
-ventral.pca.landmarks$rotation
-ventral.pca.gv.landmarks$rotation
+v.pcal.derm$rotation
+v.pcal.gv$rotation
+v.pcal.mainl$rotation
 
 ## Can be seen that 16 principal components explains for 95.7% of variation (within full
 ## data set including volans and variegatus)
@@ -85,59 +93,65 @@ ventral.pca.gv.landmarks$rotation
 # Read in metadata and prep PC data for merging  ----
 
 # Extract PC scores and make ID name from TPS into a taxon column for 
-## combining with the metadata
-ventral.pc.scores <- data.frame(specimenID = rownames(ventral.pca.landmarks$x), 
-                             ventral.pca.landmarks$x)
-ventral.pc.scores
+## combining with the metadata. pcs - PC score
+v.pcs.derm <- data.frame(specimenID = rownames(v.pcal.derm$x), 
+                        v.pcal.derm$x)
+v.pcs.derm
 
 # same with variegatus
-ventral.sunda.scores <- data.frame(specimenID = rownames(ventral.pca.gv.landmarks$x), 
-                             ventral.pca.gv.landmarks$x)
-ventral.sunda.scores
+v.pcs.gv <- data.frame(specimenID = rownames(v.pcal.gv$x), 
+                        v.pcal.gv$x)
+v.pcs.gv
+
+# Mainland data
+v.pcs.mainl <- data.frame(specimenID = rownames(v.pcal.mainl$x), 
+                        v.pcal.mainl$x)
+v.pcs.mainl
 
 # Make column names begin with PC not Comp
-colnames(ventral.pc.scores) <- gsub("Comp", "PC", colnames(ventral.pc.scores))
-colnames(ventral.sunda.scores) <- gsub("Comp", "PC", colnames(ventral.sunda.scores))
+colnames(v.pcs.derm) <- gsub("Comp", "PC", colnames(v.pcs.derm))
+colnames(v.pcs.gv) <- gsub("Comp", "PC", colnames(v.pcs.gv))
+colnames(v.pcs.mainl) <- gsub("Comp", "PC", colnames(v.pcs.mainl))
 
 # Merge with metadata ----
-ventral.pc.data <- full_join(ventral.pc.scores, metadata, by = c("specimenID" = "Ventral.ID"))
-ventral.gv.pc.data.unfixed <- full_join(ventral.sunda.scores, metadata, by = c("specimenID" = "Ventral.ID"))
-
-ventral.gv.pc.data <- ventral.gv.pc.data.unfixed %>% 
+v.pcdata.derm <- full_join(v.pcs.derm, metadata, by = c("specimenID" = "Ventral.ID"))
+v.pcdata.gv <- full_join(v.pcs.gv, metadata, by = c("specimenID" = "Ventral.ID")) %>% 
   filter(!Region == "Philippines")
-
+v.pcdata.mainl <- full_join(v.pcs.mainl, metadata, by = c("specimenID" = "Ventral.ID"))  %>% 
+  filter(!Landmass == "NA", !Region == "Philippines")
 
 # Write PC scores to new csv files ----
-write_csv(ventral.pc.data, file = "Rawdata/ventral_dermoptera_pca_data.csv") 
-write_csv(ventral.gv.pc.data, file = "Rawdata/ventral_variegatus_pca_data.csv") 
+write_csv(v.pcdata.derm, file = "Rawdata/ventral_dermoptera_pca_data.csv") 
+write_csv(v.pcdata.gv, file = "Rawdata/ventral_variegatus_pca_data.csv") 
+write_csv(v.pcdata.mainl, file = "Rawdata/ventral_mainland_pca_data.csv") 
 
 # Creation of wireframes ----
 
 ## Plot a reference shape
-ventral.ref <- mshape(gpa.ventral.lands$coords)
-sunda.ventral.ref <- mshape(gpa.ventral.gv.lands$coords)
+v.ref.derm <- mshape(v.gpal.derm$coords)
+v.ref.gv <- mshape(v.gpal.gv$coords)
 
 # Plotting the minimum and maximum of x & y values 
-plot(ventral.ref)
-plotRefToTarget(ventral.ref, ventral.pca.landmarks$shapes$shapes.comp1$min)
-plotRefToTarget(ventral.ref, ventral.pca.landmarks$shapes$shapes.comp1$max)
-plotRefToTarget(ventral.ref, ventral.pca.landmarks$shapes$shapes.comp2$min)
-plotRefToTarget(ventral.ref, ventral.pca.landmarks$shapes$shapes.comp2$max)
-plotRefToTarget(ventral.ref, ventral.pca.landmarks$shapes$shapes.comp3$min)
-plotRefToTarget(ventral.ref, ventral.pca.landmarks$shapes$shapes.comp3$max)
+plot(v.ref.derm)
+plotRefToTarget(v.ref.derm, v.pcal.derm$shapes$shapes.comp1$min)
+plotRefToTarget(v.ref.derm, v.pcal.derm$shapes$shapes.comp1$max)
+plotRefToTarget(v.ref.derm, v.pcal.derm$shapes$shapes.comp2$min)
+plotRefToTarget(v.ref.derm, v.pcal.derm$shapes$shapes.comp2$max)
+plotRefToTarget(v.ref.derm, v.pcal.derm$shapes$shapes.comp3$min)
+plotRefToTarget(v.ref.derm, v.pcal.derm$shapes$shapes.comp3$max)
 
 # Same for G.variegatus
-plot(sunda.ventral.ref)
-plotRefToTarget(sunda.ventral.ref, ventral.pca.gv.landmarks$shapes$shapes.comp1$min)
-plotRefToTarget(sunda.ventral.ref, ventral.pca.gv.landmarks$shapes$shapes.comp1$max)
-plotRefToTarget(sunda.ventral.ref, ventral.pca.gv.landmarks$shapes$shapes.comp2$min)
-plotRefToTarget(sunda.ventral.ref, ventral.pca.gv.landmarks$shapes$shapes.comp2$max)
-plotRefToTarget(sunda.ventral.ref, ventral.pca.gv.landmarks$shapes$shapes.comp3$min)
-plotRefToTarget(sunda.ventral.ref, ventral.pca.gv.landmarks$shapes$shapes.comp3$max)
+plot(v.ref.gv)
+plotRefToTarget(v.ref.gv, v.pcal.gv$shapes$shapes.comp1$min)
+plotRefToTarget(v.ref.gv, v.pcal.gv$shapes$shapes.comp1$max)
+plotRefToTarget(v.ref.gv, v.pcal.gv$shapes$shapes.comp2$min)
+plotRefToTarget(v.ref.gv, v.pcal.gv$shapes$shapes.comp2$max)
+plotRefToTarget(v.ref.gv, v.pcal.gv$shapes$shapes.comp3$min)
+plotRefToTarget(v.ref.gv, v.pcal.gv$shapes$shapes.comp3$max)
 
 # Plots for ventral principal component analysis ----
 
-ventral.plot1 <- ggplot(ventral.pc.data, aes(x=PC1, y=PC2, shape=CurrentSp, colour=Region)) + 
+v.pcplot.derm1 <- ggplot(v.pcdata.derm, aes(x=PC1, y=PC2, shape=CurrentSp, colour=Region)) + 
   geom_point(alpha = 0.75) + 
   scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#AF58BA", "#FFC61E")) +
   scale_color_manual(values = c("#FF155B", "#00CD6C", "#009ADE", "#AF58BA", "#FFC61E")) +
@@ -148,7 +162,7 @@ ventral.plot1 <- ggplot(ventral.pc.data, aes(x=PC1, y=PC2, shape=CurrentSp, colo
   geom_hline(yintercept = 0, linetype='dotted', alpha = 0.8) +
   coord_cartesian(xlim=c(-0.07,0.07), ylim=c(-0.04,0.04))
 
-ventral.plot2 <- ggplot(ventral.pc.data, aes(x=PC1, y=PC3, shape=CurrentSp, colour=Region)) + 
+v.pcplot.derm2 <- ggplot(v.pcdata.derm, aes(x=PC1, y=PC3, shape=CurrentSp, colour=Region)) + 
   geom_point(alpha = 0.75) + 
   scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#AF58BA", "#FFC61E")) +
   scale_color_manual(values = c("#FF155B", "#00CD6C", "#009ADE", "#AF58BA", "#FFC61E")) +
@@ -159,7 +173,7 @@ ventral.plot2 <- ggplot(ventral.pc.data, aes(x=PC1, y=PC3, shape=CurrentSp, colo
   geom_hline(yintercept = 0, linetype='dotted', alpha = 0.8) +
   coord_cartesian(xlim=c(-0.07,0.07), ylim=c(-0.04,0.04))
 
-ventral.plot3 <- ggplot(ventral.pc.data, aes(x=PC1, y=PC4, shape=CurrentSp, colour=Region)) + 
+v.pcplot.derm3 <- ggplot(v.pcdata.derm, aes(x=PC1, y=PC4, shape=CurrentSp, colour=Region)) + 
   geom_point(alpha = 0.75) + 
   scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#AF58BA", "#FFC61E")) +
   scale_color_manual(values = c("#FF155B", "#00CD6C", "#009ADE", "#AF58BA", "#FFC61E")) +
@@ -170,7 +184,7 @@ ventral.plot3 <- ggplot(ventral.pc.data, aes(x=PC1, y=PC4, shape=CurrentSp, colo
   geom_hline(yintercept = 0, linetype='dotted', alpha = 0.8) +  
   coord_cartesian(xlim=c(-0.07,0.07), ylim=c(-0.04,0.04))
 
-ventral.plot4 <- ggplot(ventral.pc.data, aes(x=PC2, y=PC3, shape=CurrentSp, colour=Region)) + 
+v.pcplot.derm4 <- ggplot(v.pcdata.derm, aes(x=PC2, y=PC3, shape=CurrentSp, colour=Region)) + 
   geom_point(alpha = 0.75) + 
   scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#AF58BA", "#FFC61E")) +
   scale_color_manual(values = c("#FF155B", "#00CD6C", "#009ADE", "#AF58BA", "#FFC61E")) +
@@ -181,7 +195,7 @@ ventral.plot4 <- ggplot(ventral.pc.data, aes(x=PC2, y=PC3, shape=CurrentSp, colo
   geom_hline(yintercept = 0, linetype='dotted', alpha = 0.8) +
   coord_cartesian(xlim=c(-0.04,0.04), ylim=c(-0.04,0.04))
 
-ventral.plot5 <- ggplot(ventral.pc.data, aes(x=PC2, y=PC4, shape=CurrentSp, colour=Region)) + 
+v.pcplot.derm5 <- ggplot(v.pcdata.derm, aes(x=PC2, y=PC4, shape=CurrentSp, colour=Region)) + 
   geom_point(alpha = 0.75) + 
   scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#AF58BA", "#FFC61E")) +
   scale_color_manual(values = c("#FF155B", "#00CD6C", "#009ADE", "#AF58BA", "#FFC61E")) +
@@ -192,7 +206,7 @@ ventral.plot5 <- ggplot(ventral.pc.data, aes(x=PC2, y=PC4, shape=CurrentSp, colo
   geom_hline(yintercept = 0, linetype='dotted', alpha = 0.8) +
   coord_cartesian(xlim=c(-0.04,0.04), ylim=c(-0.04,0.04))
 
-ventral.plot6 <- ggplot(ventral.pc.data, aes(x=PC3, y=PC4, shape=CurrentSp, colour=Region)) + 
+v.pcplot.derm6 <- ggplot(v.pcdata.derm, aes(x=PC3, y=PC4, shape=CurrentSp, colour=Region)) + 
   geom_point(alpha = 0.75) + 
   scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#AF58BA", "#FFC61E")) +
   scale_color_manual(values = c("#FF155B", "#00CD6C", "#009ADE", "#AF58BA", "#FFC61E")) +
@@ -204,16 +218,18 @@ ventral.plot6 <- ggplot(ventral.pc.data, aes(x=PC3, y=PC4, shape=CurrentSp, colo
   coord_cartesian(xlim=c(-0.04,0.04), ylim=c(-0.04,0.04))
 
 # Isolation of legend through creation of new plot and cowplot pkg
-gvvl <- ggplot(ventral.pc.data, aes(x=PC3, y=PC4, shape=CurrentSp, colour=Region)) + 
+v.pcplot.leg.d <- ggplot(v.pcdata.derm, aes(x=PC3, y=PC4, shape=CurrentSp, colour=Region)) + 
   geom_point() + 
   theme_bw(base_size = 10) +
-  labs(shape = "Current species") 
+  labs(shape = "Current species") +  
+  scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#AF58BA", "#FFC61E")) +
+  scale_color_manual(values = c("#FF155B", "#00CD6C", "#009ADE", "#AF58BA", "#FFC61E")) 
 
-gvventrallegend <- cowplot::get_legend(gvvl)
+v.pcplot.leg <- cowplot::get_legend(v.pcplot.leg.d)
 grid.newpage()
-grid.draw(gvventrallegend)
+grid.draw(v.pcplot.leg)
 
-plot(gvventrallegend)
+plot(v.pcplot.leg)
 
 layout <- "
 AABBCC###
@@ -225,15 +241,15 @@ DDEEFF###
 "
 
 # Using patchwork to make composite figure
-vderm.pc.plots <- ventral.plot1 + ventral.plot2 + ventral.plot3 + ventral.plot4 + ventral.plot5 + 
-  ventral.plot6 + gvventrallegend + plot_layout(design = layout)
+v.pc.plots.derm <- v.pcplot.derm1 + v.pcplot.derm2 + v.pcplot.derm3 + v.pcplot.derm4 + v.pcplot.derm5 + 
+  v.pcplot.derm6 + v.pcplot.leg + plot_layout(design = layout)
 
-vderm.pc.plots
-ggsave("ventral_dermoptera_pc_plots.png")
+v.pc.plots.derm
+ggsave("ventral_dermoptera_pc_plots.png", dpi = 900)
 
 # Plots for ventral G.variegatus principal component analysis ----
 
-gv.ventral.plot1 <- ggplot(ventral.gv.pc.data, aes(x=PC1, y=PC2, colour=Region)) + 
+v.pcplot.gv1 <- ggplot(v.pcdata.gv, aes(x=PC1, y=PC2, colour=Region)) + 
   geom_point(alpha = 0.75) + 
   scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
   scale_color_manual(values = c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
@@ -244,7 +260,7 @@ gv.ventral.plot1 <- ggplot(ventral.gv.pc.data, aes(x=PC1, y=PC2, colour=Region))
   coord_cartesian(xlim=c(-0.04,0.04), ylim=c(-0.04,0.04))
 
 
-gv.ventral.plot2 <- ggplot(ventral.gv.pc.data, aes(x=PC1, y=PC3, colour=Region)) + 
+v.pcplot.gv2 <- ggplot(v.pcdata.gv, aes(x=PC1, y=PC3, colour=Region)) + 
   geom_point(alpha = 0.75) + 
   scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
   scale_color_manual(values = c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
@@ -255,7 +271,7 @@ gv.ventral.plot2 <- ggplot(ventral.gv.pc.data, aes(x=PC1, y=PC3, colour=Region))
   coord_cartesian(xlim=c(-0.04,0.04), ylim=c(-0.04,0.04))
 
 
-gv.ventral.plot3 <- ggplot(ventral.gv.pc.data, aes(x=PC1, y=PC4, colour=Region)) + 
+v.pcplot.gv3 <- ggplot(v.pcdata.gv, aes(x=PC1, y=PC4, colour=Region)) + 
   geom_point(alpha = 0.75) + 
   scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
   scale_color_manual(values = c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
@@ -265,7 +281,7 @@ gv.ventral.plot3 <- ggplot(ventral.gv.pc.data, aes(x=PC1, y=PC4, colour=Region))
   geom_hline(yintercept = 0, linetype='dotted', alpha = 0.8) +
   coord_cartesian(xlim=c(-0.04,0.04), ylim=c(-0.04,0.04))
 
-gv.ventral.plot4 <- ggplot(ventral.gv.pc.data, aes(x=PC2, y=PC3, colour=Region)) + 
+v.pcplot.gv4 <- ggplot(v.pcdata.gv, aes(x=PC2, y=PC3, colour=Region)) + 
   geom_point(alpha = 0.75) + 
   scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
   scale_color_manual(values = c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
@@ -276,7 +292,7 @@ gv.ventral.plot4 <- ggplot(ventral.gv.pc.data, aes(x=PC2, y=PC3, colour=Region))
   geom_hline(yintercept = 0, linetype='dotted', alpha = 0.8) +
   coord_cartesian(xlim=c(-0.04,0.04), ylim=c(-0.04,0.04))
 
-gv.ventral.plot5 <- ggplot(ventral.gv.pc.data, aes(x=PC2, y=PC4, colour=Region)) + 
+v.pcplot.gv5 <- ggplot(v.pcdata.gv, aes(x=PC2, y=PC4, colour=Region)) + 
   geom_point(alpha = 0.75) + 
   scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
   scale_color_manual(values = c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
@@ -288,7 +304,7 @@ gv.ventral.plot5 <- ggplot(ventral.gv.pc.data, aes(x=PC2, y=PC4, colour=Region))
   coord_cartesian(xlim=c(-0.04,0.04), ylim=c(-0.04,0.04))
 
 
-gv.ventral.plot6 <- ggplot(ventral.gv.pc.data, aes(x=PC3, y=PC4, colour=Region)) + 
+v.pcplot.gv6 <- ggplot(v.pcdata.gv, aes(x=PC3, y=PC4, colour=Region)) + 
   geom_point(alpha = 0.75) + 
   scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
   scale_color_manual(values = c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
@@ -299,35 +315,40 @@ gv.ventral.plot6 <- ggplot(ventral.gv.pc.data, aes(x=PC3, y=PC4, colour=Region))
   geom_hline(yintercept = 0, linetype='dotted', alpha = 0.8) +
   coord_cartesian(xlim=c(-0.04,0.04), ylim=c(-0.04,0.04))
 
-gvdorsallegend <- ggplot(ventral.gv.pc.data, aes(x=PC3, y=PC4, colour=Region)) + 
+v.pcplot.leg.d2 <- ggplot(v.pcdata.gv, aes(x=PC3, y=PC4, colour=Region)) + 
   geom_point(alpha = 0.75) + 
-  theme_bw(base_size = 10) 
+  theme_bw(base_size = 10) +
+  scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
+  scale_color_manual(values = c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E"))
 
-gv.dorsal.legend <- cowplot::get_legend(gvdorsallegend)
+v.pcplot.leg.gv <- cowplot::get_legend(v.pcplot.leg.d2)
 grid.newpage()
-grid.draw(gv.dorsal.legend)
-plot(gv.dorsal.legend)
+grid.draw(v.pcplot.leg.gv)
+plot(v.pcplot.leg.gv)
 
-ventral.gv.pc.plots <- gv.ventral.plot1 + gv.ventral.plot2 + gv.ventral.plot3 + gv.ventral.plot4 +
-  gv.ventral.plot5 + gv.ventral.plot6 + gv.dorsal.legend + plot_layout(design = layout)
+v.pc.plots.gv <- v.pcplot.gv1 + v.pcplot.gv2 + v.pcplot.gv3 + v.pcplot.gv4 +
+  v.pcplot.gv5 + v.pcplot.gv6 + v.pcplot.leg.gv + plot_layout(design = layout)
 
-ventral.gv.pc.plots
+v.pc.plots.gv
 ggsave("ventral_gv_pc_plots.png")
 
-# Composite PCA plots ----
 
-# Dermoptera Composite plot data processing (PCs up to 85%)
-composite.ventral.data <- ventral.pc.data %>%
+# Dermoptera composite PCA plot ---------
+
+# Dermoptera composite plot data processing (PCs up to 85%)
+v.compdata.derm <- v.pcdata.derm %>%
   dplyr::select(CurrentSp, Region, PC1:PC19) %>%
   pivot_longer(PC1:PC18, "PC", "value") %>%
   mutate(PC = factor(PC, levels = c("PC1", "PC2", "PC3", "PC4", "PC5", "PC6",
                                     "PC7", "PC8", "PC9", "PC10", "PC11", "PC12",
                                     "PC13", "PC14", "PC15", "PC16", "PC17", "PC18"))) 
+
 # Processed Data
-composite.ventral.data
+v.compdata.derm
+
 # Plotting
-ventral.composite.pc.plot <- 
-  ggplot(composite.ventral.data, aes(x = PC, y = value, colour = Region, shape = CurrentSp)) +
+v.compplot.derm <- 
+  ggplot(v.compdata.derm, aes(x = PC, y = value, colour = Region, shape = CurrentSp)) +
   scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#AF58BA", "#FFC61E"))+
   geom_boxplot() +
   geom_jitter(alpha = 0.5) +
@@ -339,23 +360,29 @@ ventral.composite.pc.plot <-
   ylab("PC score") +
   labs(shape = "Current species") + 
   theme(legend.position = "NONE") 
+
 #Check
-ventral.composite.pc.plot
+v.compplot.derm
+
 ggsave(file = "figures/ventral_derm_composite_plot.png", width = 5, height = 8, dpi = 900)
 
 
-# Dermoptera Composite plot data processing
-Ventral.gv.pc.plot.data <- ventral.gv.pc.data %>%
+# G. variegatus composite PCA plot
+
+# Plot data processing
+v.compdata.gv <- v.pcdata.gv %>%
   dplyr::select(Region, PC1:PC20) %>%
   pivot_longer(PC1:PC19, "PC", "value") %>%
   mutate(PC = factor(PC, levels = c("PC1", "PC2", "PC3", "PC4", "PC5", "PC6",
                                     "PC7", "PC8", "PC9", "PC10", "PC11", "PC12",
                                     "PC13", "PC14", "PC15", "PC16", "PC17", "PC18", "PC19"))) 
+
 # Processed Data
-Ventral.gv.pc.plot.data
+v.compdata.gv
+
 # Plotting
-Ventral.gv.composite.pc.plot <- 
-  ggplot(Ventral.gv.pc.plot.data, aes(x = PC, y = value, colour = Region)) +
+v.compplot.gv <- 
+  ggplot(v.compdata.gv, aes(x = PC, y = value, colour = Region)) +
   scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E"))+
   geom_boxplot() +
   geom_jitter(alpha = 0.5) +
@@ -366,10 +393,56 @@ Ventral.gv.composite.pc.plot <-
   xlab("PC axis") +
   ylab("PC score") + 
   theme(legend.position = "NONE")
+
 #Check
-Ventral.gv.composite.pc.plot
+v.compplot.gv
+# Save
 ggsave(file = "figures/ventral_gv_composite_plot.png", width = 5, height = 8, dpi = 900)
 
+
+# Mainland Composite plot data processing
+v.compdata.mainl <- v.pcdata.mainl %>%
+  dplyr::select(Landmass, PC1:PC18) %>%
+  pivot_longer(PC1:PC17, "PC", "value") %>%
+  mutate(PC = factor(PC, levels = c("PC1", "PC2", "PC3", "PC4", "PC5", "PC6",
+                                    "PC7", "PC8", "PC9", "PC10", "PC11", "PC12",
+                                    "PC13", "PC14", "PC15", "PC16", "PC17"))) 
+
+# Processed Data
+v.compdata.mainl
+
+# Plotting
+v.compplot.mainl <- 
+  ggplot(v.compdata.mainl, aes(x = PC, y = value, colour = Landmass)) +
+  scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E"))+
+  geom_boxplot() +
+  geom_jitter(alpha = 0.5) +
+  theme_bw(base_size = 14) +
+  scale_color_manual(values = c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
+  ylim(-0.05,0.05) +
+  coord_flip() +
+  xlab("PC axis") +
+  theme(legend.position = "NONE")+
+  ylab("PC score") 
+
+# Check
+v.compplot.mainl
+
+# Save
+ggsave(file = "figures/ventral_mainland_composite_plot.png", width = 5, height = 8, dpi = 900)
+
+#
+ggplot(dorsal.mainland.pc.data, aes(x=PC1, y=PC2, colour=Landmass)) + 
+  geom_point(alpha = 0.75) + 
+  scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
+  scale_color_manual(values = c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
+  theme_bw(base_size = 7) +
+  scale_x_continuous(breaks = c(-0.04, 0, 0.02)) +
+  theme(legend.position = "NONE")+
+  geom_vline(xintercept = 0, linetype='dotted', alpha = 0.8) +
+  geom_hline(yintercept = 0, linetype='dotted', alpha = 0.8) +
+  coord_cartesian(xlim=c(-0.1,0.04), ylim=c(-0.04,0.04)) +
+  geom_label(aes(label=specimenID)) 
 
 # Misc Code ----
   geom_label(aes(label=SpecimenID))

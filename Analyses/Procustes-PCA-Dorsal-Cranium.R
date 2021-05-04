@@ -19,44 +19,51 @@ library(cowplot)
 
 # TPS file created from scaled landmarks measured in ImageJ
 # Read in landmark coordinates
-dorsal.lands <- readland.tps(file = "Rawdata/dorsal.crania.tps", specID = "ID")
-dorsal.lands
+d.lands.derm <- readland.tps(file = "Rawdata/dorsal.derm.crania.tps", specID = "ID")
+d.lands.derm
 
 # Input of only G. variegatus tps data
-dorsal.gv.lands <- readland.tps(file = "Rawdata/sunda.dorsal.crania.tps", specID = "ID")
-dorsal.gv.lands
+d.lands.gv <- readland.tps(file = "Rawdata/dorsal.sunda.crania.tps", specID = "ID")
+d.lands.gv
+
+# Imput of mainland G. variegatus data
+d.lands.mainl <- readland.tps(file = "Rawdata/dorsal.mainland.crania.tps", specID = "ID")
+d.lands.mainl
 
 # Plot raw y against raw x (Without procrustes - plotted points represent landmarks prior
 ## to rotation and scaling)
-plot(dorsal.lands[,2,]~dorsal.lands[,1,])
-
-# Plot G. Varigatus raw points
-plot(dorsal.gv.lands[,2,]~dorsal.gv.lands[,1,])
+plot(d.lands.derm[,2,]~d.lands.derm[,1,])
+plot(d.lands.gv[,2,]~d.lands.gv[,1,])
+plot(d.lands.mainl[,2,]~d.lands.mainl[,1,])
 
 # Normalisation of data through Generalised Procustes Analysis ----
 ## Procrustes analyses - uses reference specimen to line up all specimens 
-gpa.dorsal.lands <- gpagen(dorsal.lands)
-
-# Same with G. variegatus data
-gpa.dorsal.gv.lands <- gpagen(dorsal.gv.lands)
+# gpal - Generalised Procrustes Analysis Landmarks
+d.gpal.derm <- gpagen(d.lands.derm)
+d.gpal.gv <- gpagen(d.lands.gv)
+d.gpal.mainl <- gpagen(d.lands.mainl)
 
 # Visualising procrustes analysis ----
 
 # Black points are mean position of coordinates with grey points showing variation
-plot(gpa.dorsal.lands)
-plot(gpa.dorsal.gv.lands)
+plot(d.gpal.derm)
+plot(d.gpal.gv)
+plot(d.gpal.mainl)
 
 # Shows average landmark coordinates
-gpa.dorsal.lands
-gpa.dorsal.gv.lands
+d.gpal.derm
+d.gpal.gv
+d.gpal.mainl
 
 # Shows the scaled coordinates of all specimens
-gpa.dorsal.lands$coords
-gpa.dorsal.gv.lands$coords
+d.gpal.derm$coords
+d.gpal.gv$coords
+d.gpal.mainl$coords
 
 # Expanded information of gpa.lands. (Str:structure)
-str(gpa.dorsal.lands)
-str(gpa.dorsal.gv.lands)
+str(d.gpal.gv)
+str(d.gpal.gv)
+str(d.gpal.mainl)
 
 # Reading in of metadata ----
 metadata <- read.csv("Rawdata/dermopteradata.csv")
@@ -65,19 +72,24 @@ glimpse(metadata)
 # PCA Analysis ----
 
 # PCA Analysis (Geomorph Principal and phylogenetically-aligned 
-## components analysis of shape data)
-dorsal.pca.landmarks <- gm.prcomp(gpa.dorsal.lands$coords)
+## components analysis of shape data). pcal - Principal component analysis landmarks
+d.pcal.derm <- gm.prcomp(d.gpal.derm$coords)
 
 # Ditto for G.variegatus data
-dorsal.pca.gv.landmarks <- gm.prcomp(gpa.dorsal.gv.lands$coords)
+d.pcal.gv <- gm.prcomp(d.gpal.gv$coords)
+
+# Mainland data
+d.pcal.mainl <- gm.prcomp(d.gpal.mainl$coords)
 
 # How many PCs to include up to 95%? 
-summary(dorsal.pca.landmarks)
-summary(dorsal.pca.gv.landmarks)
+summary(d.pcal.derm)
+summary(d.pcal.gv)
+summary(d.pcal.mainl)
 
 ## Which landmarks are contributing towards each principle component
-dorsal.pca.landmarks$rotation
-dorsal.pca.gv.landmarks$rotation
+d.pcal.derm$rotation
+d.pcal.gv$rotation
+d.pcal.mainl$rotation
 
 ## Can be seen that 16 principal components explains for 95.7% of variation (within full
 ## data set including volans and variegatus)
@@ -85,59 +97,67 @@ dorsal.pca.gv.landmarks$rotation
 # Read in metadata and prep PC data for merging ----
 
 # Extract PC scores and make ID name from TPS into a taxon column for 
-## combining with the metadata
-dorsal.pc.scores <- data.frame(specimenID = rownames(dorsal.pca.landmarks$x), 
-                        dorsal.pca.landmarks$x)
-dorsal.pc.scores
+## combining with the metadata. pcs - PC score
+d.pcs.derm <- data.frame(specimenID = rownames(d.pcal.derm$x), 
+                         d.pcal.derm$x)
+d.pcs.derm
 
 # same with variegatus
-dorsal.gv.pc.scores <- data.frame(specimenID = rownames(dorsal.pca.gv.landmarks$x), 
-                                  dorsal.pca.gv.landmarks$x)
-dorsal.gv.pc.scores
+d.pcs.gv <- data.frame(specimenID = rownames(d.pcal.gv$x), 
+                       d.pcal.gv$x)
+d.pcs.gv
+
+# Mainland data
+d.pcs.mainl <-data.frame(specimenID = rownames(d.pcal.mainl$x), 
+                         d.pcal.mainl$x)
+d.pcs.mainl
 
 # Make column names begin with PC not Comp
-colnames(dorsal.pc.scores) <- gsub("Comp", "PC", colnames(dorsal.pc.scores))
-colnames(dorsal.gv.pc.scores) <- gsub("Comp", "PC", colnames(dorsal.gv.pc.scores))
+colnames(d.pcs.derm) <- gsub("Comp", "PC", colnames(d.pcs.derm))
+colnames(d.pcs.gv) <- gsub("Comp", "PC", colnames(d.pcs.gv))
+colnames(d.pcs.mainl) <- gsub("Comp", "PC", colnames(d.pcs.mainl))
 
 # Merge with metadata ----
-dorsal.pc.data <- full_join(dorsal.pc.scores, metadata, by = c("specimenID" = "Dorsal.ID"))
-dorsal.gv.pc.data.unfixed <- full_join(dorsal.gv.pc.scores, metadata, by = c("specimenID" = "Dorsal.ID"))
-
-dorsal.gv.pc.data <- dorsal.gv.pc.data.unfixed %>% 
+d.pcdata.derm <- full_join(d.pcs.derm, metadata, by = c("specimenID" = "Dorsal.ID"))
+d.pcdata.gv <- full_join(d.pcs.gv, metadata, by = c("specimenID" = "Dorsal.ID")) %>% 
   filter(!Region == "Philippines")
+d.pcdata.mainl <- full_join(d.pcs.mainl, metadata, by = c("specimenID" = "Dorsal.ID")) %>% 
+  filter(!Landmass == "NA", !Region == "Philippines")
 
 # Write PC scores to new csv files ----
-write_csv(dorsal.pc.data, file = "Rawdata/dorsal_dermoptera_pca_data.csv") 
-write_csv(dorsal.gv.pc.data, file = "Rawdata/dorsal_variegatus_pca_data.csv") 
+write_csv(d.pcdata.derm, file = "Rawdata/dorsal_dermoptera_pca_data.csv") 
+write_csv(d.pcdata.gv, file = "Rawdata/dorsal_variegatus_pca_data.csv") 
+write_csv(d.pcdata.mainl, file = "Rawdata/dorsal_mainland_pca_data.csv") 
+
 
 # Creation of wireframes ----
 
 ## Plot a reference shape
-dorsal.ref <- mshape(gpa.dorsal.lands$coords)
-dorsal.gv.ref <- mshape(gpa.dorsal.gv.lands$coords)
+d.ref.derm <- mshape(d.gpal.derm$coords)
+d.ref.gv <- mshape(d.gpal.gv$coords)
 
 # Plotting the minimum and maximum of x & y values 
-plot(dorsal.ref)
-plotRefToTarget(dorsal.ref, dorsal.pca.landmarks$shapes$shapes.comp1$min)
-plotRefToTarget(dorsal.ref, dorsal.pca.landmarks$shapes$shapes.comp1$max)
-plotRefToTarget(dorsal.ref, dorsal.pca.landmarks$shapes$shapes.comp2$min)
-plotRefToTarget(dorsal.ref, dorsal.pca.landmarks$shapes$shapes.comp2$max)
-plotRefToTarget(dorsal.ref, dorsal.pca.landmarks$shapes$shapes.comp3$min)
-plotRefToTarget(dorsal.ref, dorsal.pca.landmarks$shapes$shapes.comp3$max)
+plot(d.ref.derm)
+plotRefToTarget(d.ref.derm, d.pcal.derm$shapes$shapes.comp1$min)
+plotRefToTarget(d.ref.derm, d.pcal.derm$shapes$shapes.comp1$max)
+plotRefToTarget(d.ref.derm, d.pcal.derm$shapes$shapes.comp2$min)
+plotRefToTarget(d.ref.derm, d.pcal.derm$shapes$shapes.comp2$max)
+plotRefToTarget(d.ref.derm, d.pcal.derm$shapes$shapes.comp3$min)
+plotRefToTarget(d.ref.derm, d.pcal.derm$shapes$shapes.comp3$max)
 
 # Same for G.variegatus
-plot(dorsal.gv.ref)
-plotRefToTarget(dorsal.gv.ref, dorsal.pca.gv.landmarks$shapes$shapes.comp1$min)
-plotRefToTarget(dorsal.gv.ref, dorsal.pca.gv.landmarks$shapes$shapes.comp1$max)
-plotRefToTarget(dorsal.gv.ref, dorsal.pca.gv.landmarks$shapes$shapes.comp2$min)
-plotRefToTarget(dorsal.gv.ref, dorsal.pca.gv.landmarks$shapes$shapes.comp2$max)
-plotRefToTarget(dorsal.gv.ref, dorsal.pca.gv.landmarks$shapes$shapes.comp3$min)
-plotRefToTarget(dorsal.gv.ref, dorsal.pca.gv.landmarks$shapes$shapes.comp3$max)
+plot(d.ref.gv)
+plotRefToTarget(d.ref.gv, d.pcal.gv$shapes$shapes.comp1$min)
+plotRefToTarget(d.ref.gv, d.pcal.gv$shapes$shapes.comp1$max)
+plotRefToTarget(d.ref.gv, d.pcal.gv$shapes$shapes.comp2$min)
+plotRefToTarget(d.ref.gv, d.pcal.gv$shapes$shapes.comp2$max)
+plotRefToTarget(d.ref.gv, d.pcal.gv$shapes$shapes.comp3$min)
+plotRefToTarget(d.ref.gv, d.pcal.gv$shapes$shapes.comp3$max)
 
 # Plots for dorsal principal component analysis ----
 
 ## Plotting dorsal landmarks
-dorsal.plot1 <- ggplot(dorsal.pc.data, aes(x=PC1, y=PC2, shape=CurrentSp, colour=Region)) + 
+d.pcplot.derm1 <- ggplot(d.pcdata.derm, aes(x=PC1, y=PC2, shape=CurrentSp, colour=Region)) + 
   geom_point(alpha = 0.75) + 
   scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#AF58BA", "#FFC61E")) +
   scale_color_manual(values = c("#FF155B", "#00CD6C", "#009ADE", "#AF58BA", "#FFC61E")) +
@@ -148,7 +168,7 @@ dorsal.plot1 <- ggplot(dorsal.pc.data, aes(x=PC1, y=PC2, shape=CurrentSp, colour
   geom_hline(yintercept = 0, linetype='dotted', alpha = 0.8) +
   coord_cartesian(xlim=c(-0.05,0.10), ylim=c(-0.05,0.05)) 
 
-dorsal.plot2 <- ggplot(dorsal.pc.data, aes(x=PC1, y=PC3, shape=CurrentSp, colour=Region)) + 
+d.pcplot.derm2 <- ggplot(d.pcdata.derm, aes(x=PC1, y=PC3, shape=CurrentSp, colour=Region)) + 
   geom_point(alpha = 0.75) + 
   scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#AF58BA", "#FFC61E")) +
   scale_color_manual(values = c("#FF155B", "#00CD6C", "#009ADE", "#AF58BA", "#FFC61E")) + 
@@ -159,7 +179,7 @@ dorsal.plot2 <- ggplot(dorsal.pc.data, aes(x=PC1, y=PC3, shape=CurrentSp, colour
   geom_hline(yintercept = 0, linetype='dotted', alpha = 0.8) +
   coord_cartesian(xlim=c(-0.05,0.10), ylim=c(-0.05,0.05))
 
-dorsal.plot3 <- ggplot(dorsal.pc.data, aes(x=PC1, y=PC4, shape=CurrentSp, colour=Region)) + 
+d.pcplot.derm3 <- ggplot(d.pcdata.derm, aes(x=PC1, y=PC4, shape=CurrentSp, colour=Region)) + 
   geom_point(alpha = 0.75) + 
   scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#AF58BA", "#FFC61E")) +
   scale_color_manual(values = c("#FF155B", "#00CD6C", "#009ADE", "#AF58BA", "#FFC61E")) +
@@ -170,7 +190,7 @@ dorsal.plot3 <- ggplot(dorsal.pc.data, aes(x=PC1, y=PC4, shape=CurrentSp, colour
   geom_hline(yintercept = 0, linetype='dotted', alpha = 0.8) +
   coord_cartesian(xlim=c(-0.05,0.10), ylim=c(-0.05,0.05))
 
-dorsal.plot4 <- ggplot(dorsal.pc.data, aes(x=PC2, y=PC3, shape=CurrentSp, colour=Region)) + 
+d.pcplot.derm4 <- ggplot(d.pcdata.derm, aes(x=PC2, y=PC3, shape=CurrentSp, colour=Region)) + 
   geom_point(alpha = 0.75) + 
   scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#AF58BA", "#FFC61E")) +
   scale_color_manual(values = c("#FF155B", "#00CD6C", "#009ADE", "#AF58BA", "#FFC61E")) +
@@ -181,7 +201,7 @@ dorsal.plot4 <- ggplot(dorsal.pc.data, aes(x=PC2, y=PC3, shape=CurrentSp, colour
   geom_hline(yintercept = 0, linetype='dotted', alpha = 0.8) +
   coord_cartesian(xlim=c(-0.05,0.05), ylim=c(-0.04,0.04))
 
-dorsal.plot5 <- ggplot(dorsal.pc.data, aes(x=PC2, y=PC4, shape=CurrentSp, colour=Region)) + 
+d.pcplot.derm5 <- ggplot(d.pcdata.derm, aes(x=PC2, y=PC4, shape=CurrentSp, colour=Region)) + 
   geom_point(alpha = 0.75) + 
   scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#AF58BA", "#FFC61E")) +
   scale_color_manual(values = c("#FF155B", "#00CD6C", "#009ADE", "#AF58BA", "#FFC61E")) +
@@ -192,7 +212,7 @@ dorsal.plot5 <- ggplot(dorsal.pc.data, aes(x=PC2, y=PC4, shape=CurrentSp, colour
   geom_hline(yintercept = 0, linetype='dotted', alpha = 0.8) +
   coord_cartesian(xlim=c(-0.05,0.05), ylim=c(-0.04,0.04))
 
-dorsal.plot6 <- ggplot(dorsal.pc.data, aes(x=PC3, y=PC4, shape=CurrentSp, colour=Region)) + 
+d.pcplot.derm6 <- ggplot(d.pcdata.derm, aes(x=PC3, y=PC4, shape=CurrentSp, colour=Region)) + 
   geom_point(alpha = 0.75) + 
   scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#AF58BA", "#FFC61E")) +
   scale_color_manual(values = c("#FF155B", "#00CD6C", "#009ADE", "#AF58BA", "#FFC61E")) +
@@ -204,16 +224,18 @@ dorsal.plot6 <- ggplot(dorsal.pc.data, aes(x=PC3, y=PC4, shape=CurrentSp, colour
   coord_cartesian(xlim=c(-0.05,0.05), ylim=c(-0.04,0.04))
 
 # Isolation of legend through creation of new plot and cowplot pkg
-dorsal.legend.ref <- ggplot(dorsal.pc.data, aes(x=PC3, y=PC4, shape=CurrentSp, colour=Region)) + 
+d.pcplot.leg.d <- ggplot(d.pcdata.derm, aes(x=PC3, y=PC4, shape=CurrentSp, colour=Region)) + 
   geom_point() + 
   theme_bw(base_size = 10) +
-  labs(shape = "Current species") 
+  labs(shape = "Current species") +
+  scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#AF58BA", "#FFC61E")) +
+  scale_color_manual(values = c("#FF155B", "#00CD6C", "#009ADE", "#AF58BA", "#FFC61E"))
 
-dorsal.legend <- cowplot::get_legend(dorsal.legend.ref)
+d.pc.legend <- cowplot::get_legend(d.pcplot.leg.d)
 grid.newpage()
-grid.draw(dorsal.legend)
+grid.draw(d.pc.legend)
 
-plot(dorsal.legend)
+plot(d.pc.legend)
 
 layout <- "
 AABBCC###
@@ -225,15 +247,15 @@ DDEEFF###
 "
 
 # Using patchwork to make composite figure
-dorsal.pc.plots <- dorsal.plot1 + dorsal.plot2 + dorsal.plot3 + dorsal.plot4 + dorsal.plot5 + 
-  dorsal.plot6 + dorsal.legend + plot_layout(design = layout)
+d.pc.plots.derm <- d.pcplot.derm1 + d.pcplot.derm2 + d.pcplot.derm3 + d.pcplot.derm4 + d.pcplot.derm5 + 
+  d.pcplot.derm6 + d.pc.legend + plot_layout(design = layout)
 
-dorsal.pc.plots
+d.pc.plots.derm
 ggsave("dorsal_dermoptera_pc_plots.png")
 
 # Plots for dorsal G.variegatus principal component analysis ----
 
-gv.dorsal.plot1 <- ggplot(dorsal.gv.pc.data, aes(x=PC1, y=PC2, colour=Region)) + 
+d.pcplot.gv1 <- ggplot(d.pcdata.gv, aes(x=PC1, y=PC2, colour=Region)) + 
   scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
   scale_color_manual(values = c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
   geom_point(alpha = 0.75) + 
@@ -243,7 +265,7 @@ gv.dorsal.plot1 <- ggplot(dorsal.gv.pc.data, aes(x=PC1, y=PC2, colour=Region)) +
   geom_hline(yintercept = 0, linetype='dotted', alpha = 0.8) +
   coord_cartesian(xlim=c(-0.04,0.04), ylim=c(-0.05,0.05))
 
-gv.dorsal.plot2 <- ggplot(dorsal.gv.pc.data, aes(x=PC1, y=PC3, colour=Region)) + 
+d.pcplot.gv2 <- ggplot(d.pcdata.gv, aes(x=PC1, y=PC3, colour=Region)) + 
   geom_point(alpha = 0.75) + 
   scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
   scale_color_manual(values = c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
@@ -253,7 +275,7 @@ gv.dorsal.plot2 <- ggplot(dorsal.gv.pc.data, aes(x=PC1, y=PC3, colour=Region)) +
   geom_hline(yintercept = 0, linetype='dotted', alpha = 0.8) +
   coord_cartesian(xlim=c(-0.04,0.04), ylim=c(-0.04,0.04))
 
-gv.dorsal.plot3 <- ggplot(dorsal.gv.pc.data, aes(x=PC1, y=PC4, colour=Region)) + 
+d.pcplot.gv3 <- ggplot(d.pcdata.gv, aes(x=PC1, y=PC4, colour=Region)) + 
   geom_point(alpha = 0.75) + 
   scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
   scale_color_manual(values = c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
@@ -263,7 +285,7 @@ gv.dorsal.plot3 <- ggplot(dorsal.gv.pc.data, aes(x=PC1, y=PC4, colour=Region)) +
   geom_hline(yintercept = 0, linetype='dotted', alpha = 0.8) +
   coord_cartesian(xlim=c(-0.04,0.04), ylim=c(-0.04,0.04))
 
-gv.dorsal.plot4 <- ggplot(dorsal.gv.pc.data, aes(x=PC2, y=PC3, colour=Region)) + 
+d.pcplot.gv4 <- ggplot(d.pcdata.gv, aes(x=PC2, y=PC3, colour=Region)) + 
   geom_point(alpha = 0.75) + 
   scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
   scale_color_manual(values = c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
@@ -274,7 +296,7 @@ gv.dorsal.plot4 <- ggplot(dorsal.gv.pc.data, aes(x=PC2, y=PC3, colour=Region)) +
   geom_hline(yintercept = 0, linetype='dotted', alpha = 0.8) +
   coord_cartesian(xlim=c(-0.04,0.04), ylim=c(-0.04,0.04))
 
-gv.dorsal.plot5 <- ggplot(dorsal.gv.pc.data, aes(x=PC2, y=PC4, colour=Region)) + 
+d.pcplot.gv5 <- ggplot(d.pcdata.gv, aes(x=PC2, y=PC4, colour=Region)) + 
   geom_point(alpha = 0.75) + 
   scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
   scale_color_manual(values = c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
@@ -285,7 +307,7 @@ gv.dorsal.plot5 <- ggplot(dorsal.gv.pc.data, aes(x=PC2, y=PC4, colour=Region)) +
   geom_hline(yintercept = 0, linetype='dotted', alpha = 0.8) +
   coord_cartesian(xlim=c(-0.04,0.04), ylim=c(-0.04,0.04))
 
-gv.dorsal.plot6 <- ggplot(dorsal.gv.pc.data, aes(x=PC3, y=PC4, colour=Region)) + 
+d.pcplot.gv6 <- ggplot(d.pcdata.gv, aes(x=PC3, y=PC4, colour=Region)) + 
   geom_point(alpha = 0.75) + 
   scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
   scale_color_manual(values = c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
@@ -296,34 +318,36 @@ gv.dorsal.plot6 <- ggplot(dorsal.gv.pc.data, aes(x=PC3, y=PC4, colour=Region)) +
   geom_hline(yintercept = 0, linetype='dotted', alpha = 0.8) +
   coord_cartesian(xlim=c(-0.04,0.04), ylim=c(-0.04,0.04))
 
-gvdl <- ggplot(dorsal.gv.pc.data, aes(x=PC3, y=PC4, colour=Region)) + 
+d.pcplot.leg.d2 <- ggplot(d.pcdata.gv, aes(x=PC3, y=PC4, colour=Region)) + 
   geom_point(alpha = 0.75) + 
-  theme_bw(base_size = 10) 
+  theme_bw(base_size = 10) + 
+  scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
+  scale_color_manual(values = c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) 
 
-gvdorsallegend <- cowplot::get_legend(gvdl)
+d.pcplot.leg.gv <- cowplot::get_legend(d.pcplot.leg.d2)
 grid.newpage()
-grid.draw(gvdorsallegend)
-plot(gvdorsallegend)
+grid.draw(d.pcplot.leg.gv)
+plot(d.pcplot.leg.gv)
 
-dorsal.gv.pc.plots <- gv.dorsal.plot1 + gv.dorsal.plot2 + gv.dorsal.plot3 + 
-  gv.dorsal.plot4 + gv.dorsal.plot5 + gv.dorsal.plot6 + gvdorsallegend + plot_layout(design = layout)
+d.pc.plots.gv <- d.pcplot.gv1 + d.pcplot.gv2 + d.pcplot.gv3 + 
+  d.pcplot.gv4 + d.pcplot.gv5 + d.pcplot.gv6 + d.pcplot.leg.gv + plot_layout(design = layout)
 
-dorsal.gv.pc.plots
+d.pc.plots.gv
 ggsave("dorsal_gv_pc_plots.png")
 
 # Composite PCA plots ----
 
-# Dermoptera Composite plot data processing
-composite.dorsal.data <- dorsal.pc.data %>%
+# Dermoptera composite plot data processing
+d.compdata.derm <- d.pcdata.derm %>%
   dplyr::select(CurrentSp, Region, PC1:PC19) %>%
   pivot_longer(PC1:PC18, "PC", "value") %>%
   mutate(PC = factor(PC, levels = c("PC1", "PC2", "PC3", "PC4", "PC5", "PC6",
                                     "PC7", "PC8", "PC9", "PC10", "PC11", "PC12",
                                     "PC13", "PC14", "PC15", "PC16", "PC17", "PC18"))) 
 # Processed Data
-composite.dorsal.data
+d.compdata.derm
 # Plotting
-Dorsal.composite.pc.plot <- 
+d.compplot.derm <- 
   ggplot(composite.dorsal.data, aes(x = PC, y = value, colour = Region, shape = CurrentSp)) +
   scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#AF58BA", "#FFC61E"))+
   geom_boxplot() +
@@ -341,17 +365,17 @@ Dorsal.composite.pc.plot
 ggsave(file = "figures/dorsal_derm_composite_plot.png", width = 5, height = 8, dpi = 900)
 
 
-# Dermoptera Composite plot data processing
-dorsal.gv.pc.plot.data <- dorsal.gv.pc.data %>%
+# G. variegatus composite plot data processing
+d.compdata.gv <- d.pcdata.gv %>%
   dplyr::select(Region, PC1:PC20) %>%
   pivot_longer(PC1:PC19, "PC", "value") %>%
   mutate(PC = factor(PC, levels = c("PC1", "PC2", "PC3", "PC4", "PC5", "PC6",
                                     "PC7", "PC8", "PC9", "PC10", "PC11", "PC12",
                                     "PC13", "PC14", "PC15", "PC16", "PC17", "PC18", "PC19"))) 
 # Processed Data
-dorsal.gv.pc.plot.data
+d.compdata.gv
 # Plotting
-Dorsal.gv.composite.pc.plot <- 
+d.compplot.derm <- 
   ggplot(dorsal.gv.pc.plot.data, aes(x = PC, y = value, colour = Region)) +
   scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E"))+
   geom_boxplot() +
@@ -364,8 +388,48 @@ Dorsal.gv.composite.pc.plot <-
   xlab("PC axis") +
   ylab("PC score") 
 #Check
-Dorsal.gv.composite.pc.plot
+d.compplot.derm
 ggsave(file = "figures/dorsal_gv_composite_plot.png", width = 5, height = 8, dpi = 900)
+
+# Mainland Composite plot data processing
+d.compdata.mainl <- d.pcdata.mainl %>%
+  dplyr::select(Landmass, PC1:PC18) %>%
+  pivot_longer(PC1:PC17, "PC", "value") %>%
+  mutate(PC = factor(PC, levels = c("PC1", "PC2", "PC3", "PC4", "PC5", "PC6",
+                                    "PC7", "PC8", "PC9", "PC10", "PC11", "PC12",
+                                    "PC13", "PC14", "PC15", "PC16", "PC17"))) 
+# Processed Data
+d.compdata.mainl
+# Plotting
+d.compplot.mainl <- 
+  ggplot(composite.dorsal.mainland.data, aes(x = PC, y = value, colour = Landmass)) +
+  scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E"))+
+  geom_boxplot() +
+  geom_jitter(alpha = 0.5) +
+  theme_bw(base_size = 14) +
+  scale_color_manual(values = c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
+  ylim(-0.05,0.05) +
+  coord_flip() +
+  xlab("PC axis") +
+  theme(legend.position = "NONE")+
+  ylab("PC score") 
+#Check
+d.compplot.mainl
+ggsave(file = "figures/dorsal_mainland_composite_plot.png", width = 5, height = 8, dpi = 900)
+
+#
+ggplot(dorsal.mainland.pc.data, aes(x=PC1, y=PC2, colour=Landmass)) + 
+  geom_point(alpha = 0.75) + 
+  scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
+  scale_color_manual(values = c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
+  theme_bw(base_size = 7) +
+  scale_x_continuous(breaks = c(-0.04, 0, 0.02)) +
+  theme(legend.position = "NONE")+
+  geom_vline(xintercept = 0, linetype='dotted', alpha = 0.8) +
+  geom_hline(yintercept = 0, linetype='dotted', alpha = 0.8) +
+  coord_cartesian(xlim=c(-0.1,0.04), ylim=c(-0.04,0.04)) +
+  geom_label(aes(label=specimenID)) 
+
 
  # Misc Code ----
   geom_label(aes(label=SpecimenID))
