@@ -154,7 +154,7 @@ plotRefToTarget(d.ref.gv, d.pcal.gv$shapes$shapes.comp2$max)
 plotRefToTarget(d.ref.gv, d.pcal.gv$shapes$shapes.comp3$min)
 plotRefToTarget(d.ref.gv, d.pcal.gv$shapes$shapes.comp3$max)
 
-# Plots for dorsal principal component analysis ----
+# Plots for dorsal Dermoptera principal component analysis ----
 
 ## Plotting dorsal landmarks
 d.pcplot.derm1 <- ggplot(d.pcdata.derm, aes(x=PC1, y=PC2, shape=CurrentSp, colour=Region)) + 
@@ -251,7 +251,7 @@ d.pc.plots.derm <- d.pcplot.derm1 + d.pcplot.derm2 + d.pcplot.derm3 + d.pcplot.d
   d.pcplot.derm6 + d.pc.legend + plot_layout(design = layout)
 
 d.pc.plots.derm
-ggsave("dorsal_dermoptera_pc_plots.png")
+ggsave(file = "dorsal_dermoptera_pc_plots.png", height = 4.95, width = 11.475, dpi = 900)
 
 # Plots for dorsal G.variegatus principal component analysis ----
 
@@ -333,7 +333,92 @@ d.pc.plots.gv <- d.pcplot.gv1 + d.pcplot.gv2 + d.pcplot.gv3 +
   d.pcplot.gv4 + d.pcplot.gv5 + d.pcplot.gv6 + d.pcplot.leg.gv + plot_layout(design = layout)
 
 d.pc.plots.gv
-ggsave("dorsal_gv_pc_plots.png")
+ggsave(file = "dorsal_gv_pc_plots.png", height = 6.6, width = 15.3)
+
+
+# Plots for dorsal Mainland principal component analysis ----
+
+d.pcplot.mainl1 <- ggplot(d.pcdata.mainl, aes(x=PC1, y=PC2, colour=Region)) + 
+  scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
+  scale_color_manual(values = c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
+  geom_point(alpha = 0.75) + 
+  theme_bw(base_size = 7) +
+  theme(legend.position = "NONE") +
+  geom_vline(xintercept = 0, linetype='dotted', alpha = 0.8) +
+  geom_hline(yintercept = 0, linetype='dotted', alpha = 0.8) +
+  coord_cartesian(xlim=c(-0.04,0.04), ylim=c(-0.05,0.05))
+
+d.pcplot.mainl2 <- ggplot(d.pcdata.mainl, aes(x=PC1, y=PC3, colour=Region)) + 
+  geom_point(alpha = 0.75) + 
+  scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
+  scale_color_manual(values = c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
+  theme_bw(base_size = 7) +
+  theme(legend.position = "NONE") +
+  geom_vline(xintercept = 0, linetype='dotted', alpha = 0.8) +
+  geom_hline(yintercept = 0, linetype='dotted', alpha = 0.8) +
+  coord_cartesian(xlim=c(-0.04,0.04), ylim=c(-0.04,0.04))
+
+d.pcplot.mainl3 <- ggplot(d.pcdata.mainl, aes(x=PC1, y=PC4, colour=Region)) + 
+  geom_point(alpha = 0.75) + 
+  scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
+  scale_color_manual(values = c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
+  theme_bw(base_size = 7) +
+  theme(legend.position = "NONE") +
+  geom_vline(xintercept = 0, linetype='dotted', alpha = 0.8) +
+  geom_hline(yintercept = 0, linetype='dotted', alpha = 0.8) +
+  coord_cartesian(xlim=c(-0.04,0.04), ylim=c(-0.04,0.04))
+
+d.pcplot.mainl4 <- ggplot(d.pcdata.mainl, aes(x=PC2, y=PC3, colour=Region)) + 
+  geom_point(alpha = 0.75) + 
+  scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
+  scale_color_manual(values = c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
+  theme_bw(base_size = 7) +
+  scale_x_continuous(breaks = c(-0.02, 0, 0.02, 0.04)) +
+  theme(legend.position = "NONE")+
+  geom_vline(xintercept = 0, linetype='dotted', alpha = 0.8) +
+  geom_hline(yintercept = 0, linetype='dotted', alpha = 0.8) +
+  coord_cartesian(xlim=c(-0.04,0.04), ylim=c(-0.04,0.04))
+
+d.pcplot.mainl5 <- ggplot(d.pcdata.mainl, aes(x=PC2, y=PC4, colour=Region)) + 
+  geom_point(alpha = 0.75) + 
+  scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
+  scale_color_manual(values = c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
+  theme_bw(base_size = 7) +
+  scale_x_continuous(breaks = c(-0.02, 0, 0.02, 0.04)) +
+  theme(legend.position = "NONE")+
+  geom_vline(xintercept = 0, linetype='dotted', alpha = 0.8) +
+  geom_hline(yintercept = 0, linetype='dotted', alpha = 0.8) +
+  coord_cartesian(xlim=c(-0.04,0.04), ylim=c(-0.04,0.04))
+
+d.pcplot.mainl6 <- ggplot(d.pcdata.mainl, aes(x=PC3, y=PC4, colour=Region)) + 
+  geom_point(alpha = 0.75) + 
+  scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
+  scale_color_manual(values = c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
+  theme_bw(base_size = 7) +
+  scale_x_continuous(breaks = c(-0.02, 0, 0.02)) +
+  theme(legend.position = "NONE")+
+  geom_vline(xintercept = 0, linetype='dotted', alpha = 0.8) +
+  geom_hline(yintercept = 0, linetype='dotted', alpha = 0.8) +
+  coord_cartesian(xlim=c(-0.04,0.04), ylim=c(-0.04,0.04))
+
+d.pcplot.leg.d3 <- ggplot(d.pcdata.mainl, aes(x=PC3, y=PC4, colour=Region)) + 
+  geom_point(alpha = 0.75) + 
+  theme_bw(base_size = 10) + 
+  scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
+  scale_color_manual(values = c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) 
+
+d.pcplot.leg.mail <- cowplot::get_legend(d.pcplot.leg.d3)
+grid.newpage()
+grid.draw(d.pcplot.leg.mail)
+plot(d.pcplot.leg.mail)
+
+d.pc.plots.mainl <- d.pcplot.mainl1 + d.pcplot.mainl2 + d.pcplot.mainl3 + 
+  d.pcplot.mainl4 + d.pcplot.mainl5+ d.pcplot.mainl6 + d.pcplot.leg.mail + plot_layout(design = layout)
+
+d.pc.plots.mainl
+ggsave(file = "dorsal_mainl_pc_plots.png", height = 6.6, width = 15.3)
+
+
 
 # Composite PCA plots ----
 
@@ -348,7 +433,7 @@ d.compdata.derm <- d.pcdata.derm %>%
 d.compdata.derm
 # Plotting
 d.compplot.derm <- 
-  ggplot(composite.dorsal.data, aes(x = PC, y = value, colour = Region, shape = CurrentSp)) +
+  ggplot(d.compdata.derm, aes(x = PC, y = value, colour = Region, shape = CurrentSp)) +
   scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#AF58BA", "#FFC61E"))+
   geom_boxplot() +
   geom_jitter(alpha = 0.5) +
@@ -362,7 +447,7 @@ d.compplot.derm <-
   labs(shape = "Current species")
 #Check
 Dorsal.composite.pc.plot
-ggsave(file = "figures/dorsal_derm_composite_plot.png", width = 5, height = 8, dpi = 900)
+ggsave(file = "figures/dorsal_derm_composite_plot.png", height = 4.95, width = 11.475, dpi = 900)
 
 
 # G. variegatus composite plot data processing
@@ -391,7 +476,7 @@ d.compplot.derm <-
 
 #Check
 d.compplot.derm
-ggsave(file = "figures/dorsal_gv_composite_plot.png", width = 5, height = 8, dpi = 900)
+ggsave(file = "figures/dorsal_gv_composite_plot.png", height = 4.95, width = 11.475, dpi = 900)
 
 # Mainland Composite plot data processing
 d.compdata.mainl <- d.pcdata.mainl %>%

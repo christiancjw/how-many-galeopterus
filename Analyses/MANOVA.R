@@ -51,6 +51,12 @@ gv.manova.dorsal.date <- manova(as.matrix(d.pcdata.gv[,2:20]) ~ Date.Photographe
                         data = d.pcdata.gv)
 summary(gv.manova.dorsal.date)
 
+# MANOVA of G.variegatus PCA data by insular group
+gv.manova.dorsal.is <- manova(as.matrix(d.pcdata.gv[,2:20]) ~ Insular.gp,
+                                data = d.pcdata.gv)
+summary(gv.manova.dorsal.is)
+
+
 # MANOVA of G.variegatus PCA data by sex and region
 gv.manova.dorsal.sex.region <- manova(as.matrix(d.pcdata.gv[,2:20]) ~ Sex * Region * Date.Photographed,
                           data = d.pcdata.gv)
@@ -59,22 +65,22 @@ summary(gv.manova.dorsal.sex.region)
 # Multivariate analysis of variance for dorsal mainland G.v. data ----
 
 # MANOVA of mainland G.v. PCA data by region
-mainl.manova.dorsal.landmass <- manova(as.matrix(d.pcdata.mainl[,2:20]) ~ Landmass,
+mainl.manova.dorsal.landmass <- manova(as.matrix(d.pcdata.mainl[,2:17]) ~ Landmass,
                            data = d.pcdata.mainl)
 summary(mainl.manova.dorsal.landmass)
 
 # MANOVA of mainland G.v. PCA data by sex
-mainl.manova.dorsal.sex <- manova(as.matrix(d.pcdata.mainl[,2:20]) ~ Sex,
+mainl.manova.dorsal.sex <- manova(as.matrix(d.pcdata.mainl[,2:17]) ~ Sex,
                         data = d.pcdata.mainl)
 summary(mainl.manova.dorsal.sex)
 
 # MANOVA of mainland G.v. PCA data by date photographed
-mainl.manova.dorsal.date <- manova(as.matrix(d.pcdata.mainl[,2:20]) ~ Date.Photographed,
+mainl.manova.dorsal.date <- manova(as.matrix(d.pcdata.mainl[,2:17]) ~ Date.Photographed,
                          data = d.pcdata.mainl)
 summary(mainl.manova.dorsal.date)
 
 # MANOVA of mainland G.v. PCA data by sex and region
-mainl.manova.dorsal.sex.region <- manova(as.matrix(d.pcdata.mainl[,2:20]) ~ Sex * Region * Date.Photographed,
+mainl.manova.dorsal.sex.region <- manova(as.matrix(d.pcdata.mainl[,2:17]) ~ Sex * Region * Date.Photographed,
                        data = d.pcdata.mainl)
 summary(mainl.manova.dorsal.sex.region)
 
@@ -106,39 +112,45 @@ summary(derm.manova.ventral.date)
 # Multivariate analysis of variance for ventral G.variegatus data ----
 
 # MANOVA of G.variegatus PCA data by region
-gv.manova.ventral.region <- manova(as.matrix(v.pcdata.gv[,2:20]) ~ Region,
+gv.manova.ventral.region <- manova(as.matrix(v.pcdata.gv[,2:28]) ~ Region,
                            data = v.pcdata.gv)
 summary(gv.manova.ventral.region)
 
 # MANOVA of G.variegatus PCA data by sex
-gv.manova.ventral.sex <- manova(as.matrix(v.pcdata.gv[,2:20]) ~ Sex,
+gv.manova.ventral.sex <- manova(as.matrix(v.pcdata.gv[,2:28]) ~ Sex,
                         data = v.pcdata.gv)
-summary(VV.sex.manova)
+summary(gv.manova.ventral.sex)
 
 # MANOVA of G.variegatus PCA data by date photographed
-gv.manova.ventral.date <- manova(as.matrix(v.pcdata.gv[,2:20]) ~ Date.Photographed,
+gv.manova.ventral.date <- manova(as.matrix(v.pcdata.gv[,2:28]) ~ Date.Photographed,
                          data = v.pcdata.gv)
 summary(gv.manova.ventral.date)
 
+# MANOVA of G.variegatus PCA data by insular group
+gv.manova.ventral.is <- manova(as.matrix(v.pcdata.gv[,2:28]) ~ Insular.gp,
+                              data = v.pcdata.gv)
+summary(gv.manova.ventral.is)
+
+
 # MANOVA of G.variegatus PCA data by sex and region
-gv.manova.ventral.sex.region <- manova(as.matrix(v.pcdata.gv[,2:20]) ~ Sex * Region,
+gv.manova.ventral.sex.region <- manova(as.matrix(v.pcdata.gv[,2:28]) ~ Sex * Region,
                        data = v.pcdata.gv)
 summary(gv.manova.ventral.sex.region)
 
 # Multivariate analysis of variance for ventral  mainland G.v. PCA data ----
 
 # MANOVA of mainland G.v. PCA data by landmass
-mainl.manova.ventral.landmass <- manova(as.matrix(v.pcdata.mainl[,2:20]) ~ Landmass,
+mainl.manova.ventral.landmass <- manova(as.matrix(v.pcdata.mainl[,2:23]) ~ Landmass,
                            data = v.pcdata.mainl)
 summary(mainl.manova.ventral.landmass)
 
 # MANOVA of mainland G.v. PCA data by sex
-DV.sex.manova <- manova(as.matrix(v.pcdata.mainl[,2:20]) ~ Sex,
+DV.sex.manova <- manova(as.matrix(v.pcdata.mainl[,2:23]) ~ Sex,
                         data = v.pcdata.mainl)
 summary(DV.sex.manova)
 
 # MANOVA of mainland G.v. PCA data by date photographed
-DV.date.manova <- manova(as.matrix(v.pcdata.mainl[,2:20]) ~ Date.Photographed,
+DV.date.manova <- manova(as.matrix(v.pcdata.mainl[,2:23]) ~ Date.Photographed,
                          data = v.pcdata.mainl)
 summary(DV.date.manova)
 

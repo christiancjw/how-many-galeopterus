@@ -245,7 +245,7 @@ v.pc.plots.derm <- v.pcplot.derm1 + v.pcplot.derm2 + v.pcplot.derm3 + v.pcplot.d
   v.pcplot.derm6 + v.pcplot.leg + plot_layout(design = layout)
 
 v.pc.plots.derm
-ggsave("ventral_dermoptera_pc_plots.png", dpi = 900)
+ggsave("ventral_dermoptera_pc_plots.png", height = 4.95, width = 11.475, dpi = 900)
 
 # Plots for ventral G.variegatus principal component analysis ----
 
@@ -330,7 +330,91 @@ v.pc.plots.gv <- v.pcplot.gv1 + v.pcplot.gv2 + v.pcplot.gv3 + v.pcplot.gv4 +
   v.pcplot.gv5 + v.pcplot.gv6 + v.pcplot.leg.gv + plot_layout(design = layout)
 
 v.pc.plots.gv
-ggsave("ventral_gv_pc_plots.png")
+ggsave(file = "ventral_gv_pc_plots.png", height = 4.95, width = 11.475, dpi = 900)
+
+
+# Plots for dorsal Mainland principal component analysis ----
+
+v.pcplot.mainl1 <- ggplot(v.pcdata.mainl, aes(x=PC1, y=PC2, colour=Region)) + 
+  scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
+  scale_color_manual(values = c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
+  geom_point(alpha = 0.75) + 
+  theme_bw(base_size = 7) +
+  theme(legend.position = "NONE") +
+  geom_vline(xintercept = 0, linetype='dotted', alpha = 0.8) +
+  geom_hline(yintercept = 0, linetype='dotted', alpha = 0.8) +
+  coord_cartesian(xlim=c(-0.04,0.04), ylim=c(-0.05,0.05))
+
+v.pcplot.mainl2 <- ggplot(v.pcdata.mainl, aes(x=PC1, y=PC3, colour=Region)) + 
+  geom_point(alpha = 0.75) + 
+  scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
+  scale_color_manual(values = c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
+  theme_bw(base_size = 7) +
+  theme(legend.position = "NONE") +
+  geom_vline(xintercept = 0, linetype='dotted', alpha = 0.8) +
+  geom_hline(yintercept = 0, linetype='dotted', alpha = 0.8) +
+  coord_cartesian(xlim=c(-0.04,0.04), ylim=c(-0.04,0.04))
+
+v.pcplot.mainl3 <- ggplot(v.pcdata.mainl, aes(x=PC1, y=PC4, colour=Region)) + 
+  geom_point(alpha = 0.75) + 
+  scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
+  scale_color_manual(values = c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
+  theme_bw(base_size = 7) +
+  theme(legend.position = "NONE") +
+  geom_vline(xintercept = 0, linetype='dotted', alpha = 0.8) +
+  geom_hline(yintercept = 0, linetype='dotted', alpha = 0.8) +
+  coord_cartesian(xlim=c(-0.04,0.04), ylim=c(-0.04,0.04))
+
+v.pcplot.mainl4 <- ggplot(v.pcdata.mainl, aes(x=PC2, y=PC3, colour=Region)) + 
+  geom_point(alpha = 0.75) + 
+  scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
+  scale_color_manual(values = c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
+  theme_bw(base_size = 7) +
+  scale_x_continuous(breaks = c(-0.02, 0, 0.02, 0.04)) +
+  theme(legend.position = "NONE")+
+  geom_vline(xintercept = 0, linetype='dotted', alpha = 0.8) +
+  geom_hline(yintercept = 0, linetype='dotted', alpha = 0.8) +
+  coord_cartesian(xlim=c(-0.04,0.04), ylim=c(-0.04,0.04))
+
+v.pcplot.mainl5 <- ggplot(v.pcdata.mainl, aes(x=PC2, y=PC4, colour=Region)) + 
+  geom_point(alpha = 0.75) + 
+  scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
+  scale_color_manual(values = c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
+  theme_bw(base_size = 7) +
+  scale_x_continuous(breaks = c(-0.02, 0, 0.02, 0.04)) +
+  theme(legend.position = "NONE")+
+  geom_vline(xintercept = 0, linetype='dotted', alpha = 0.8) +
+  geom_hline(yintercept = 0, linetype='dotted', alpha = 0.8) +
+  coord_cartesian(xlim=c(-0.04,0.04), ylim=c(-0.04,0.04))
+
+v.pcplot.mainl6 <- ggplot(v.pcdata.mainl, aes(x=PC3, y=PC4, colour=Region)) + 
+  geom_point(alpha = 0.75) + 
+  scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
+  scale_color_manual(values = c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
+  theme_bw(base_size = 7) +
+  scale_x_continuous(breaks = c(-0.02, 0, 0.02)) +
+  theme(legend.position = "NONE")+
+  geom_vline(xintercept = 0, linetype='dotted', alpha = 0.8) +
+  geom_hline(yintercept = 0, linetype='dotted', alpha = 0.8) +
+  coord_cartesian(xlim=c(-0.04,0.04), ylim=c(-0.04,0.04))
+
+v.pcplot.leg.d3 <- ggplot(v.pcdata.mainl, aes(x=PC3, y=PC4, colour=Region)) + 
+  geom_point(alpha = 0.75) + 
+  theme_bw(base_size = 10) + 
+  scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +
+  scale_color_manual(values = c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) 
+
+v.pcplot.leg.mail <- cowplot::get_legend(v.pcplot.leg.d3)
+grid.newpage()
+grid.draw(v.pcplot.leg.mail)
+plot(v.pcplot.leg.mail)
+
+v.pc.plots.mainl <- v.pcplot.mainl1 + v.pcplot.mainl2 + v.pcplot.mainl3 + 
+  v.pcplot.mainl4 + v.pcplot.mainl5+ v.pcplot.mainl6 + v.pcplot.leg.mail + plot_layout(design = layout)
+
+v.pc.plots.mainl
+ggsave(file = "ventral_mainl_pc_plots.png", height = 4.95, width = 11.475, dpi = 900)
+
 
 
 # Dermoptera composite PCA plot ---------
