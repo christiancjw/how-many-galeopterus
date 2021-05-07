@@ -249,6 +249,14 @@ ggsave("ventral_dermoptera_pc_plots.png", height = 4.95, width = 11.475, dpi = 9
 
 # Plots for ventral G.variegatus principal component analysis ----
 
+ggplot(v.pcdata.gv, aes(x=PC1, y=PC2, colour=Insular.gp)) + 
+  geom_point(alpha = 0.75) + 
+  theme_bw(base_size = 7) +
+  geom_vline(xintercept = 0, linetype='dotted', alpha = 0.8) +
+  geom_hline(yintercept = 0, linetype='dotted', alpha = 0.8) +
+  coord_cartesian(xlim=c(-0.04,0.04), ylim=c(-0.04,0.04))
+ggsave(file = "Insulargp_plot.png", dpi = 900)
+
 v.pcplot.gv1 <- ggplot(v.pcdata.gv, aes(x=PC1, y=PC2, colour=Region)) + 
   geom_point(alpha = 0.75) + 
   scale_fill_manual(values=c("#FF155B", "#00CD6C", "#009ADE", "#FFC61E")) +

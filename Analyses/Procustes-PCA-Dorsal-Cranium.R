@@ -333,7 +333,7 @@ d.pc.plots.gv <- d.pcplot.gv1 + d.pcplot.gv2 + d.pcplot.gv3 +
   d.pcplot.gv4 + d.pcplot.gv5 + d.pcplot.gv6 + d.pcplot.leg.gv + plot_layout(design = layout)
 
 d.pc.plots.gv
-ggsave(file = "dorsal_gv_pc_plots.png", height = 6.6, width = 15.3)
+ggsave(file = "dorsal_gv_pc_plots.png", height = 4.95, width = 11.475, dpi = 900)
 
 
 # Plots for dorsal Mainland principal component analysis ----
@@ -416,7 +416,7 @@ d.pc.plots.mainl <- d.pcplot.mainl1 + d.pcplot.mainl2 + d.pcplot.mainl3 +
   d.pcplot.mainl4 + d.pcplot.mainl5+ d.pcplot.mainl6 + d.pcplot.leg.mail + plot_layout(design = layout)
 
 d.pc.plots.mainl
-ggsave(file = "dorsal_mainl_pc_plots.png", height = 6.6, width = 15.3)
+ggsave(file = "dorsal_mainl_pc_plots.png", height = 4.95, width = 11.475, dpi = 900)
 
 
 
